@@ -23,14 +23,40 @@ from config import BTS_LOOKUP_URL, LOOKUP_DIR, LOOKUPS, YEAR_END, YEAR_START
 log = get_logger("p4_load_reference")
 
 
-def get_lookup(name: str) -> pd.DataFrame:
+def _looks_like_lookup(content: bytes) -> bool:
+    """Una lookup válida de BTS es un CSV cuya primera línea es Code,Description."""
+    first_line = content.lstrip(b"\xef\xbb\xbf").split(b"\n", 1)[0].lower()
+    return b"code" in first_line and b"description" in first_line
+
+
+def get_lookup(name: str) -> pd.DataFrame | None:
+    """Devuelve la lookup como DataFrame (code, description), o None si no está disponible.
+
+    Si no hay archivo local, intenta descargarlo. Si BTS no devuelve un CSV válido
+    (por ejemplo una página HTML), NO se guarda nada y se continúa sin esa lookup:
+    las dimensiones se construyen igual, usando los códigos y ciudades de raw.flights.
+    """
     path = LOOKUP_DIR / f"{name}.csv"
+    if path.exists() and not _looks_like_lookup(path.read_bytes()):
+        log.warning("%s no es un CSV válido (descarga fallida anterior); se borra", path.name)
+        path.unlink()
+
     if not path.exists():
         log.info("Descargando lookup %s", name)
-        r = requests.get(BTS_LOOKUP_URL.format(name=name), timeout=60)
-        r.raise_for_status()
-        LOOKUP_DIR.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(r.content)
+        try:
+            r = requests.get(BTS_LOOKUP_URL.format(name=name), timeout=60)
+            r.raise_for_status()
+            if not _looks_like_lookup(r.content):
+                raise ValueError("BTS no devolvió un CSV")
+            LOOKUP_DIR.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(r.content)
+        except Exception as exc:  # noqa: BLE001
+            log.warning(
+                "No se pudo descargar %s (%s). Bájala a mano con 'Get Lookup Table' en la página "
+                "de BTS y guárdala como data/lookups/%s.csv. Se continúa sin ella.",
+                name, exc, name)
+            return None
+
     df = pd.read_csv(path, dtype=str)
     df.columns = [c.strip().lower() for c in df.columns]
     return df[["code", "description"]].dropna()
@@ -44,8 +70,11 @@ def copy_df(cur, table: str, df: pd.DataFrame) -> None:
 
 
 def main() -> None:
+    empty = pd.DataFrame(columns=["code", "description"])
     airlines = get_lookup(LOOKUPS["airlines"])
-    airports = get_lookup(LOOKUPS["airports"]).rename(columns={"code": "airport_id"})
+    airlines = empty if airlines is None else airlines
+    airports = get_lookup(LOOKUPS["airports"])
+    airports = (empty if airports is None else airports).rename(columns={"code": "airport_id"})
     airports = airports[airports["airport_id"].str.isdigit()]
 
     us_hol = holidays.US(years=range(YEAR_START, YEAR_END + 1))
