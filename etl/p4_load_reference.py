@@ -57,7 +57,12 @@ def get_lookup(name: str) -> pd.DataFrame | None:
                 name, exc, name)
             return None
 
-    df = pd.read_csv(path, dtype=str)
+    # Las lookups de BTS vienen en Windows-1252 (nombres con acentos, p. ej. aeropuertos
+    # de Puerto Rico o México); si no son UTF-8 válido se leen con cp1252.
+    try:
+        df = pd.read_csv(path, dtype=str, encoding="utf-8-sig")
+    except UnicodeDecodeError:
+        df = pd.read_csv(path, dtype=str, encoding="cp1252")
     df.columns = [c.strip().lower() for c in df.columns]
     return df[["code", "description"]].dropna()
 
