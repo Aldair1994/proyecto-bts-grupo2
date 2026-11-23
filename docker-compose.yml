@@ -1,0 +1,64 @@
+# Proyecto final - Introducción al Análisis de Datos (USAC EEP) - Grupo 2 (2010-2020)
+#
+# Servicios:
+#   db  -> PostgreSQL 16 con los esquemas raw / ref / dw (se crean solos la primera vez)
+#   etl -> contenedor Python con los scripts del pipeline (se ejecuta bajo demanda)
+#
+# Uso rápido:
+#   cp .env.example .env
+#   docker compose up -d db
+#   docker compose run --rm etl python etl/run_pipeline.py --start 2010 --end 2010
+
+services:
+  db:
+    image: postgres:16
+    container_name: bts_db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Los scripts de sql/init/ se ejecutan solo al crear la base por primera vez
+      - ./sql/init:/docker-entrypoint-initdb.d:ro
+    # Ajustes para carga masiva en una máquina de ~16 GB de RAM (t3.xlarge).
+    # Para máquinas de 8 GB, bajar shared_buffers a 2GB y effective_cache_size a 6GB.
+    command: >
+      postgres
+        -c shared_buffers=4GB
+        -c effective_cache_size=12GB
+        -c work_mem=64MB
+        -c maintenance_work_mem=1GB
+        -c max_wal_size=8GB
+        -c checkpoint_timeout=15min
+        -c wal_compression=on
+        -c max_parallel_workers_per_gather=4
+    shm_size: 1gb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  etl:
+    build: .
+    container_name: bts_etl
+    env_file: .env
+    environment:
+      PGHOST: db
+      PGPORT: 5432
+    volumes:
+      - ./data:/app/data
+      - ./sql:/app/sql:ro
+      - ./etl:/app/etl:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ["etl"]
+
+volumes:
+  pgdata:

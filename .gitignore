@@ -1,0 +1,16 @@
+# Credenciales
+.env
+
+# Datos (pesan demasiado para GitHub; se regeneran con el pipeline)
+data/raw_zip/
+data/parquet/
+data/lookups/
+*.zip
+*.csv
+*.parquet
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
