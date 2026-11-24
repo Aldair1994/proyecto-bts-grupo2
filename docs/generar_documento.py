@@ -307,7 +307,7 @@ if resumen.exists():
         "Hay 969 vuelos normales sin retraso reportado (0.0014 %) y 352 donde ArrDel15 no coincide con ArrDelay (0.0005 %). Son pocos, y se van a cuarentena con su código de regla para que Data Engineering los revise.",
         "La regla R06 salió más estricta que la realidad. 39,234 vuelos cancelados (0.058 % del total, entre 600 y 1,200 por mes) sí traen hora de salida, porque se cancelaron después de salir de la puerta. No es error de captura: se conservan y se marcan con una bandera, no se rechazan.",
         "Los nulos grandes son legítimos. Las cinco causas de retraso vienen vacías en 82.1 % de los registros porque solo aplican a llegadas con 15 minutos o más. CancellationCode viene vacío en 98.1 % porque solo aplica a cancelados. ArrDelay vacío en 2.17 % corresponde a los cancelados y desviados.",
-        "Las tres columnas de Gate Return (FirstDepTime, TotalAddGTime, LongestAddGTime) están vacías en 99.4 % de las filas. Proponemos conservarlas en staging y no usarlas en el modelo en estrella ni en el dashboard.",
+        "Las tres columnas de Gate Return (FirstDepTime, TotalAddGTime, LongestAddGTime) están vacías en 99.4 % de las filas. Que estén casi siempre vacías es lo esperado: solo traen valor los vuelos que regresaron a la puerta, unos 400 mil. Si la pregunta de regresos a puerta se queda en la lista final se conservan; si se descarta, no hace falta usarlas en el modelo en estrella ni en el dashboard.",
         "Se cancelaron 1,302,027 vuelos (1.94 %) y se desviaron 156,836 (0.23 %). Entre 2010 y 2019 la cancelación anual va de 1.17 % (2016) a 2.18 % (2014). En 2020 sube a 5.99 %, con 281,034 vuelos cancelados.",
         "El volumen anual baja de 7.4 millones de vuelos en 2019 a 4.7 millones en 2020. La tasa diaria de cancelación antes de 2020 tiene mediana de 0.87 %. Entre el 20 de marzo y el 10 de abril de 2020 va de 19.9 % a 53.2 %, con el pico del 30 de marzo. Esto confirma con datos el evento E24.",
         "Antes de 2020, los días más extremos son tormentas de invierno y huracanes: 33.6 % el 1 de febrero de 2011, 27.8 % el 29 de octubre de 2012 (Sandy), 27.5 % el 13 de febrero de 2014, 25.0 % el 14 de marzo de 2017 y 24.5 % el 23 de enero de 2016 (Jonas). Los eventos E26 a E30 se agregaron a la tabla porque el dato los mostró y no estaban en la lista inicial.",
@@ -336,6 +336,20 @@ tabla(["Id", "Inicio", "Fin", "Tipo", "Evento", "Tratamiento"],
       [(e[0], e[1], e[2], e[3], e[4], e[6]) for e in EVENTOS], anchos=[1.0, 2.0, 2.0, 2.2, 5.6, 3.6], tam=7.5)
 p("Proponemos guardar esta tabla como ref_eventos_externos y unirla a dim_fecha con una columna es_evento (0/1) y otra evento_id. "
   "Así Data Analyst puede incluir o excluir esos días con un filtro, sin borrar nada de la fuente.")
+
+doc.add_heading("3.7 Catálogo de aerolíneas", 2)
+p("BTS no clasifica a las aerolíneas, así que armamos un catálogo con las 22 que aparecen en los datos: tradicionales, de bajo costo "
+  "y regionales. La clasificación es criterio del equipo a partir del modelo de negocio conocido de cada aerolínea, no una "
+  "categoría oficial, y está en docs/catalogo_aerolineas.csv. Sirve para la pregunta de aerolíneas de bajo costo contra tradicionales.")
+cat = pd.read_csv(B / "docs" / "catalogo_aerolineas.csv")
+tabla(["Código", "Aerolínea", "Tipo", "Años en los datos", "Vuelos", "Nota"],
+      [(r.reporting_airline, r.nombre_comun, r.tipo_aerolinea,
+        f"{r.anio_inicio_en_datos} a {r.anio_fin_en_datos}", f"{int(r.vuelos_2010_2020):,}", "" if pd.isna(r.nota) else r.nota)
+       for r in cat.itertuples()], anchos=[1.3, 3.6, 2.0, 2.2, 2.2, 4.7], tam=7.5)
+p("Tres cosas afectan cualquier comparación entre aerolíneas. Spirit solo aparece desde 2015, y Allegiant y Republic desde 2018, "
+  "porque BTS solo recoge a las que superan cierto tamaño; comparar 2010 contra 2020 por aerolínea deja fuera a esas. Varias "
+  "desaparecen por fusión (Continental, AirTran, US Airways, Virgin America, ExpressJet). Y los regionales (SkyWest, Envoy, Endeavor, "
+  "PSA, Mesa, Republic, ExpressJet) vuelan para las grandes, así que un ranking que los mezcle con ellas confunde dos cosas distintas.")
 
 # ------------------------------------------------------------------ 4
 doc.add_heading("4. Gobierno de datos y versionado", 1)

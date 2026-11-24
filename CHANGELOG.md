@@ -20,3 +20,10 @@ Formato de versiones: MAYOR.MENOR.PARCHE. Mayor si cambia el esquema, menor si c
 
 ### Cambiado
 - `.gitignore`: se agregan excepciones para los CSV de `docs/` y `docs/calidad/`.
+
+## [1.0.1] - Data Administrator
+
+### Agregado
+- `docs/catalogo_aerolineas.csv`: las 22 aerolíneas presentes en los datos, con tipo (tradicional, bajo costo, regional), anios de aparicion y fusiones.
+- `sql/quality/checks.sql`: reglas R01 a R11 y conciliacion de filas por anio contra lo esperado segun los zip (67,249,397 filas). Sin correr todavia contra una base cargada.
+- Seccion 3.7 del documento con el catalogo y sus advertencias.
