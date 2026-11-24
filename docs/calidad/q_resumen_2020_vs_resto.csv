@@ -1,0 +1,15 @@
+,2010-2019,2020
+filas,62561043,4688354
+R01_duplicados_clave,4,0
+R02_nulos_obligatorios,0,0
+R03_flags_invalidos,0,0
+R04_hora_fuera_rango,0,0
+R05_distancia_no_positiva,0,0
+R06_cancelado_con_horas,38036,1198
+R06_cancelado_sin_codigo,0,0
+R07_normal_sin_retraso,968,1
+R08_ardel15_incoherente,351,1
+R09_causas_no_suman,1,1
+R11_retraso_atipico,484,151
+cancelados,1020993,281034
+desviados,149092,7744

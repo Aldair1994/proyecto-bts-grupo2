@@ -1,0 +1,54 @@
+﻿campo_bts,tipo_sql,categoria_bts,descripcion,unidad_formato,nulos_esperados,uso,columna_en_raw_flights
+Year,SMALLINT,Time Period,Anio del vuelo,AAAA,No,dim_fecha,year
+Quarter,SMALLINT,Time Period,Trimestre del anio,1 a 4,No,dim_fecha,quarter
+Month,SMALLINT,Time Period,Mes del anio,1 a 12,No,dim_fecha,month
+DayofMonth,SMALLINT,Time Period,Dia del mes,1 a 31,No,dim_fecha,day_of_month
+DayOfWeek,SMALLINT,Time Period,Dia de la semana,1=lunes a 7=domingo,No,dim_fecha,day_of_week
+FlightDate,DATE,Time Period,Fecha del vuelo,AAAA-MM-DD,No,"dim_fecha, fact_flights.fecha_id",flight_date
+Reporting_Airline,VARCHAR(3),Airline,Codigo unico de la aerolinea reportante,Codigo,No,dim_airline,reporting_airline
+DOT_ID_Reporting_Airline,INT,Airline,Identificador numerico DOT de la aerolinea,ID,No,dim_airline.airline_id,dot_id_reporting_airline
+IATA_CODE_Reporting_Airline,VARCHAR(3),Airline,Codigo IATA de la aerolinea,Codigo,Raro,dim_airline,no se carga
+Tail_Number,VARCHAR(10),Airline,Matricula de la aeronave,Texto,"Si, hay vacios",dim_vuelo (opcional),tail_number
+Flight_Number_Reporting_Airline,INT,Airline,Numero de vuelo,Entero,No,dim_vuelo / flight_id,flight_number
+OriginAirportID,INT,Origin and Destination,ID numerico DOT del aeropuerto de origen,ID,No,fact_flights.origin_airport_id,origin_airport_id
+Origin,VARCHAR(3),Origin and Destination,Codigo IATA del aeropuerto de origen,Codigo,No,dim_airport,origin
+OriginCityName,VARCHAR(80),Origin and Destination,Ciudad y estado del origen,"Ciudad, ST",No,dim_airport,origin_city_name
+OriginState,VARCHAR(2),Origin and Destination,Estado del origen,Codigo,Raro,dim_airport,origin_state
+DestAirportID,INT,Origin and Destination,ID numerico DOT del aeropuerto de destino,ID,No,fact_flights.destination_airport_id,dest_airport_id
+Dest,VARCHAR(3),Origin and Destination,Codigo IATA del aeropuerto de destino,Codigo,No,dim_airport,dest
+DestCityName,VARCHAR(80),Origin and Destination,Ciudad y estado del destino,"Ciudad, ST",No,dim_airport,dest_city_name
+DestState,VARCHAR(2),Origin and Destination,Estado del destino,Codigo,Raro,dim_airport,dest_state
+CRSDepTime,SMALLINT,Departure Performance,"Hora programada de salida, hora local",hhmm,Raro,"fact_flights, derivadas",crs_dep_time
+DepTime,SMALLINT,Departure Performance,"Hora real de salida, hora local",hhmm,"Si, vuelos cancelados",fact_flights,dep_time
+DepDelay,"NUMERIC(6,1)",Departure Performance,Diferencia salida real menos programada (negativo es adelanto),minutos,"Si, vuelos cancelados",fact_flights.retraso_salida,dep_delay
+DepDelayMinutes,"NUMERIC(6,1)",Departure Performance,"Retraso de salida, minimo cero",minutos,"Si, vuelos cancelados",KPI,no se carga
+DepDel15,SMALLINT,Departure Performance,Indicador de retraso de salida de 15 min o mas,0/1,"Si, vuelos cancelados",KPI de puntualidad,dep_del15
+DepTimeBlk,VARCHAR(9),Departure Performance,"Bloque horario de salida programada, de una hora",0600-0659,No,dim_bloque_horario,dep_time_blk
+TaxiOut,"NUMERIC(6,1)",Departure Performance,Minutos de rodaje desde la puerta hasta el despegue,minutos,"Si, cancelados",analisis,taxi_out
+WheelsOff,SMALLINT,Departure Performance,"Hora de despegue, hora local",hhmm,"Si, cancelados",analisis,no se carga
+WheelsOn,SMALLINT,Arrival Performance,"Hora de aterrizaje, hora local",hhmm,"Si, cancelados y desviados",analisis,no se carga
+TaxiIn,"NUMERIC(6,1)",Arrival Performance,Minutos de rodaje desde el aterrizaje hasta la puerta,minutos,"Si, cancelados y desviados",analisis,taxi_in
+CRSArrTime,SMALLINT,Arrival Performance,"Hora programada de llegada, hora local",hhmm,Raro,fact_flights,crs_arr_time
+ArrTime,SMALLINT,Arrival Performance,"Hora real de llegada, hora local",hhmm,"Si, cancelados y desviados",fact_flights,arr_time
+ArrDelay,"NUMERIC(6,1)",Arrival Performance,Diferencia llegada real menos programada,minutos,"Si, cancelados y desviados",fact_flights.retraso_llegada,arr_delay
+ArrDelayMinutes,"NUMERIC(6,1)",Arrival Performance,"Retraso de llegada, minimo cero",minutos,"Si, cancelados y desviados",KPI,no se carga
+ArrDel15,SMALLINT,Arrival Performance,Indicador de retraso de llegada de 15 min o mas (variable objetivo),0/1,"Si, cancelados y desviados",KPI y modelos,arr_del15
+Cancelled,SMALLINT,Cancellations and Diversions,Indicador de vuelo cancelado,0/1,No,estado_vuelo,cancelled
+DivAirportLandings,SMALLINT,Cancellations and Diversions,Numero de aterrizajes en aeropuertos de desvio,Entero,No (viene en 0 si no hubo desvio),analisis de desvios,div_airport_landings
+DivReachedDest,SMALLINT,Cancellations and Diversions,Indicador de que el vuelo desviado llego a su destino,0/1,"Si, vacio salvo en vuelos desviados",analisis de desvios,div_reached_dest
+CancellationCode,VARCHAR(1),Cancellations and Diversions,"Causa de cancelacion: A aerolinea, B clima, C NAS, D seguridad",Codigo,"Si, solo si Cancelled=1","estado_vuelo, analisis",cancellation_code
+Diverted,SMALLINT,Cancellations and Diversions,Indicador de vuelo desviado,0/1,No,estado_vuelo,diverted
+CRSElapsedTime,"NUMERIC(6,1)",Flight Summaries,Tiempo programado de vuelo total,minutos,Raro,fact_flights,crs_elapsed_time
+ActualElapsedTime,"NUMERIC(6,1)",Flight Summaries,Tiempo real de vuelo total,minutos,"Si, cancelados y desviados",fact_flights,actual_elapsed_time
+AirTime,"NUMERIC(6,1)",Flight Summaries,Tiempo en el aire,minutos,"Si, cancelados y desviados",analisis,air_time
+Flights,SMALLINT,Flight Summaries,Numero de vuelos del registro (siempre 1),Entero,No,medida de conteo,no se carga
+Distance,"NUMERIC(7,1)",Flight Summaries,Distancia entre aeropuertos,millas,Raro,fact_flights.distancia,distance
+DistanceGroup,SMALLINT,Flight Summaries,Grupo de distancia en tramos de 250 millas,1 a 11,No,segmentacion,no se carga
+CarrierDelay,"NUMERIC(6,1)",Cause of Delay,Minutos de retraso atribuidos a la aerolinea,minutos,"Si, solo si ArrDelay>=15",analisis de causas,carrier_delay
+WeatherDelay,"NUMERIC(6,1)",Cause of Delay,Minutos de retraso por clima extremo,minutos,"Si, solo si ArrDelay>=15",analisis de causas,weather_delay
+NASDelay,"NUMERIC(6,1)",Cause of Delay,Minutos de retraso por el sistema nacional del espacio aereo,minutos,"Si, solo si ArrDelay>=15",analisis de causas,nas_delay
+SecurityDelay,"NUMERIC(6,1)",Cause of Delay,Minutos de retraso por seguridad,minutos,"Si, solo si ArrDelay>=15",analisis de causas,security_delay
+LateAircraftDelay,"NUMERIC(6,1)",Cause of Delay,Minutos de retraso por llegada tardia de la aeronave previa,minutos,"Si, solo si ArrDelay>=15",analisis de causas,late_aircraft_delay
+FirstDepTime,SMALLINT,Gate Return Information,Primera hora de salida de la puerta en el aeropuerto de origen,hhmm,"Si, casi siempre",analisis (opcional),first_dep_time
+TotalAddGTime,"NUMERIC(6,1)",Gate Return Information,Minutos totales en tierra por regreso a puerta,minutos,"Si, casi siempre",analisis (opcional),total_add_g_time
+LongestAddGTime,"NUMERIC(6,1)",Gate Return Information,Mayor tiempo en tierra por regreso a puerta,minutos,"Si, casi siempre",analisis (opcional),longest_add_g_time

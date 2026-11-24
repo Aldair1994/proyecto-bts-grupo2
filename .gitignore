@@ -14,3 +14,7 @@ __pycache__/
 *.pyc
 .venv/
 .ipynb_checkpoints/
+
+# Excepciones: documentacion y resultados de calidad del Data Administrator (son livianos y se versionan)
+!docs/*.csv
+!docs/calidad/*.csv
