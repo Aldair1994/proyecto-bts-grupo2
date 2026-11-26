@@ -33,7 +33,8 @@ def main() -> int:
     p.add_argument("--start", type=int, default=YEAR_START)
     p.add_argument("--end", type=int, default=YEAR_END)
     p.add_argument("--steps", nargs="+", choices=ALL_STEPS, default=ALL_STEPS)
-    p.add_argument("--keep-zip", action="store_true", help="no borrar los zips después de convertirlos")
+    p.add_argument("--delete-zip", action="store_true",
+                   help="borrar cada zip después de convertirlo (por defecto se conservan)")
     a = p.parse_args()
 
     log.info("Inicio del pipeline: años %d-%d, pasos %s", a.start, a.end, a.steps)
@@ -41,7 +42,7 @@ def main() -> int:
     if "download" in a.steps:
         problems += p1_download.main(a.start, a.end)
     if "parquet" in a.steps:
-        problems += p2_to_parquet.main(a.start, a.end, delete_zip=not a.keep_zip)
+        problems += p2_to_parquet.main(a.start, a.end, delete_zip=a.delete_zip)
     if "load" in a.steps:
         problems += p3_load_raw.main(a.start, a.end)
     if "reference" in a.steps:

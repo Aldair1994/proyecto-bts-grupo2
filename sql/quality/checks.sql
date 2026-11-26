@@ -8,7 +8,9 @@
 -- contra una base cargada.
 -- =====================================================================
 
--- 1. Conciliacion de filas por anio (R12): lo cargado debe igualar lo que traen los zip
+-- 1. Conciliacion de filas por anio (R12) en tres puntos: lo que traen los zip (esperado),
+--    lo que registro la carga (raw.load_log) y lo que hay en raw.flights.
+--    meses_log debe ser 12 y las tres cifras de filas deben coincidir.
 WITH esperado(anio, filas) AS (VALUES
     (2010, 6450117),
     (2011, 6085281),
@@ -21,12 +23,25 @@ WITH esperado(anio, filas) AS (VALUES
     (2018, 7206195),
     (2019, 7422037),
     (2020, 4688354)
+),
+bitacora AS (
+    SELECT year AS anio, count(*) AS meses, sum(rows_loaded) AS filas
+    FROM raw.load_log GROUP BY year
+),
+cargado AS (
+    SELECT extract(year FROM flight_date)::int AS anio, count(*) AS filas
+    FROM raw.flights GROUP BY 1
 )
-SELECT e.anio, e.filas AS esperado, coalesce(r.filas, 0) AS cargado,
-       coalesce(r.filas, 0) - e.filas AS diferencia
+SELECT e.anio,
+       e.filas               AS esperado,
+       coalesce(b.meses, 0)  AS meses_log,
+       coalesce(b.filas, 0)  AS filas_log,
+       coalesce(c.filas, 0)  AS filas_raw,
+       CASE WHEN b.meses = 12 AND b.filas = e.filas AND c.filas = e.filas
+            THEN 'OK' ELSE 'REVISAR' END AS estado
 FROM esperado e
-LEFT JOIN (SELECT extract(year FROM flight_date)::int AS anio, count(*) AS filas
-           FROM raw.flights GROUP BY 1) r USING (anio)
+LEFT JOIN bitacora b USING (anio)
+LEFT JOIN cargado  c USING (anio)
 ORDER BY e.anio;
 -- Total esperado: 67,249,397
 

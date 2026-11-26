@@ -27,3 +27,10 @@ Formato de versiones: MAYOR.MENOR.PARCHE. Mayor si cambia el esquema, menor si c
 - `docs/catalogo_aerolineas.csv`: las 22 aerolíneas presentes en los datos, con tipo (tradicional, bajo costo, regional), anios de aparicion y fusiones.
 - `sql/quality/checks.sql`: reglas R01 a R11 y conciliacion de filas por anio contra lo esperado segun los zip (67,249,397 filas). Sin correr todavia contra una base cargada.
 - Seccion 3.7 del documento con el catalogo y sus advertencias.
+
+## [1.0.2] - Data Administrator
+
+### Cambiado
+- `sql/quality/checks.sql`: la conciliacion por anio compara ahora los zip, `raw.load_log` y `raw.flights`, y marca cada anio como OK o REVISAR. Sin correr todavia contra una base cargada.
+- `.gitignore`: se une con los cambios de `main` (lookups versionados y `data/logs/`).
+

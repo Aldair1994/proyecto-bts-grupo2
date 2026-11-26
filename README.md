@@ -74,7 +74,7 @@ docker compose run --rm etl python etl/run_pipeline.py --start 2016 --end 2020 -
 docker compose run --rm etl python etl/run_pipeline.py --steps load reference star
 ```
 
-Cada paso se puede repetir sin duplicar datos: los meses ya descargados, convertidos o cargados se omiten. Para recargar un mes: `python etl/p3_load_raw.py --start 2015 --end 2015 --force`.
+Cada paso se puede repetir sin duplicar datos: los meses ya descargados, convertidos o cargados se omiten. Los zips se conservan por defecto (para regenerar el Parquet si cambian las columnas); para liberar espacio usar `--delete-zip`. Para recargar un mes: `python etl/p3_load_raw.py --start 2015 --end 2015 --force`.
 
 Los logs quedan en `data/logs/pipeline_AAAAMMDD.log`.
 
@@ -82,9 +82,11 @@ Los logs quedan en `data/logs/pipeline_AAAAMMDD.log`.
 - **Power BI / DBeaver / pgAdmin:** host del servidor, puerto `5432`, base `bts` y el usuario y la contraseña del `.env`.
 - Para el dashboard, usar las tablas del esquema `dw`.
 
+### Tablas de referencia (lookups)
+`data/lookups/L_UNIQUE_CARRIERS.csv` y `data/lookups/L_AIRPORT_ID.csv` se descargaron a mano con el botón *Get Lookup Table* de BTS (la descarga automática devuelve HTML) y están versionadas en el repositorio, así que no hay que volver a bajarlas.
+
 ### Si falla la descarga de BTS
 - **Zips mensuales:** se pueden bajar a mano desde la página de BTS y guardar en `data/raw_zip/` con el nombre `bts_ontime_AAAA_MM.zip`.
-- **Lookups:** en la página de descarga, botón *Get Lookup Table* junto a `Reporting_Airline` y `OriginAirportID`. Guardarlas como `data/lookups/L_UNIQUE_CARRIERS.csv` y `data/lookups/L_AIRPORT_ID.csv`.
 
 ## Pendientes
 - [ ] Confirmar las columnas cuando el grupo cierre las preguntas de negocio
