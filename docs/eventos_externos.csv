@@ -1,0 +1,31 @@
+﻿id,inicio,fin,tipo,evento,alcance,tratamiento
+E01,2010-04-29,2020-12-31,Regulatorio,Regla del DOT de demora en pista de 3 horas (multas por exceder el tiempo),"Nacional, permanente",Variable pre/post; las cancelaciones suben porque cancelar sale mas barato que la multa
+E02,2010-12-26,2010-12-28,Clima,"Tormenta de nieve en el noreste (NY, NJ, Boston)","Regional, 3 dias",Bandera es_evento; excluir de comparaciones de estacionalidad
+E03,2011-02-01,2011-02-03,Clima,Tormenta invernal en Chicago y el centro del pais,"Regional, 3 dias",Bandera es_evento
+E04,2011-08-27,2011-08-29,Clima,Huracan Irene en el noreste,"Regional, 3 dias",Bandera es_evento
+E05,2012-10-28,2012-11-02,Clima,"Huracan Sandy, cierre de aeropuertos de Nueva York y Nueva Jersey",Regional pero con efecto en cadena nacional,Bandera es_evento; analizar aparte
+E06,2013-04-21,2013-04-26,Politico y operativo,Recortes presupuestarios (sequester): dias de licencia obligatoria a controladores,"Nacional, 6 dias",Bandera es_evento; buen caso para el objetivo NAS
+E07,2013-10-01,2013-10-16,Politico,Cierre del gobierno federal (los controladores siguieron trabajando),"Nacional, efecto limitado",Bandera informativa
+E08,2013-11-01,2013-11-01,Seguridad,Tiroteo en el aeropuerto de Los Angeles (LAX),"Local, un dia",Bandera local; no justifica corte
+E09,2014-01-02,2014-01-08,Clima,Vortice polar y tormenta Hercules en el noreste y medio oeste,"Regional, una semana",Bandera es_evento
+E10,2014-09-26,2014-10-12,Operativo,Incendio en el centro de control de la FAA en Chicago (Aurora),"Local con efecto nacional, unas dos semanas",Bandera es_evento; analizar O'Hare y Midway aparte
+E11,2014-12-28,2014-12-28,Corporativo,AirTran deja de operar como marca y pasa a Southwest,Cambio de serie por aerolinea,Anotar en dim_airline
+E12,2015-04-08,2015-10-17,Corporativo,Integracion de US Airways con American (un solo certificado y luego un solo sistema de reservas),Cambio de serie por aerolinea,Anotar en dim_airline; agrupar US y AA para comparar
+E13,2016-01-22,2016-01-24,Clima,Tormenta Jonas en el noreste y el Atlantico medio,"Regional, 3 dias",Bandera es_evento
+E14,2016-07-20,2016-08-10,Tecnologico,Fallas informaticas de Southwest (20-jul) y Delta (8 a 10-ago),"Por aerolinea, cancelaciones masivas",Bandera por aerolinea; no tratar como clima
+E15,2016-10-06,2016-10-09,Clima,Huracan Matthew en Florida y la costa sureste,"Regional, 4 dias",Bandera es_evento
+E16,2017-01-06,2017-01-06,Seguridad,Tiroteo en el aeropuerto de Fort Lauderdale,"Local, un dia",Bandera local; no justifica corte
+E17,2017-08-25,2017-09-30,Clima,"Huracanes Harvey (Houston), Irma (Florida) y Maria (Puerto Rico)","Regional, cinco semanas",Bandera es_evento; analizar por estado
+E18,2017-12-17,2017-12-18,Infraestructura,Apagon de unas 11 horas en el aeropuerto de Atlanta (ATL),"Local en el aeropuerto mas grande, con efecto nacional",Bandera local
+E19,2018-01-01,2018-01-31,Corporativo,Virgin America se integra a Alaska Airlines,Cambio de serie por aerolinea,Anotar en dim_airline
+E20,2018-09-14,2018-10-12,Clima,Huracanes Florence y Michael,"Regional, varias semanas",Bandera es_evento
+E21,2018-12-22,2019-01-25,Politico,"Cierre del gobierno federal mas largo de la historia (35 dias), con ausentismo de controladores y TSA","Nacional, se agravo hacia el final",Corte propio; analizar enero de 2019
+E22,2019-03-13,2020-12-31,Flota,Suspension de los Boeing 737 MAX en EE. UU. (la FAA autorizo el regreso el 18-nov-2020),"Por aerolinea (Southwest, American, United), se traslapa con la pandemia",Bandera por aerolinea y periodo; separar su efecto del de 2020
+E23,2019-09-01,2019-09-06,Clima,Huracan Dorian,"Regional, Florida",Bandera es_evento
+E24,2020-03-01,2020-06-30,Sanitario,"Pandemia de COVID-19: emergencia nacional el 13-mar, caida de pasajeros cercana al 95 % en abril","Nacional y total, la mayor ruptura del periodo",Corte propio; 2020 se reporta con y sin ese tramo
+E25,2020-07-01,2020-12-31,Sanitario,Recuperacion parcial del trafico con capacidad reducida,Nacional,Corte propio (periodo_covid = recuperacion)
+E26,2010-02-05,2010-02-10,Clima,Tormentas de nieve en el noreste y Atlantico medio (pico de 23.4 % de cancelaciones el 10-feb),"Regional, una semana",Bandera es_evento; detectado en el dato
+E27,2014-02-13,2014-02-13,Clima,Tormenta invernal en el sureste y noreste (27.5 % de cancelaciones),"Regional, un dia",Bandera es_evento; detectado en el dato
+E28,2017-03-14,2017-03-14,Clima,Tormenta invernal en el noreste (25.0 % de cancelaciones),"Regional, un dia",Bandera es_evento; detectado en el dato
+E29,2018-01-04,2018-01-04,Clima,Tormenta invernal intensa en la costa este (20.1 % de cancelaciones),"Regional, un dia",Bandera es_evento; detectado en el dato
+E30,2018-03-21,2018-03-22,Clima,Tormenta de nieve en el noreste (20.1 % de cancelaciones),"Regional, dos dias",Bandera es_evento; detectado en el dato

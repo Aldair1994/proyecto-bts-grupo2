@@ -1,0 +1,23 @@
+﻿reporting_airline,nombre_comun,tipo_aerolinea,anio_inicio_en_datos,anio_fin_en_datos,vuelos_2010_2020,nota
+WN,Southwest Airlines,Bajo costo,2010,2020,13294593,"Se clasifica como bajo costo por su modelo de tarifas bajas y flota unica, aunque algunos la consideran hibrida. Absorbio a AirTran (FL)"
+DL,Delta Air Lines,Tradicional,2010,2020,8991784,"Incluye la fusion con Northwest, previa a 2010"
+AA,American Airlines,Tradicional,2010,2020,7650177,Absorbio a US Airways (US) entre 2015 y 2016
+OO,SkyWest Airlines,Regional,2010,2020,7152546,Opera vuelos para varias aerolineas grandes
+UA,United Air Lines,Tradicional,2010,2020,5385827,Absorbio a Continental (CO)
+EV,ExpressJet (Atlantic Southeast),Regional,2010,2020,4615554,Absorbio a XE en 2011
+MQ,Envoy Air (American Eagle),Regional,2010,2020,3319768,Regional de American
+B6,JetBlue Airways,Bajo costo,2010,2020,2732689,
+US,US Airways,Tradicional,2010,2015,2246049,Dejo de reportar al integrarse con American
+AS,Alaska Airlines,Tradicional,2010,2020,1926917,Absorbio a Virgin America (VX) en 2018
+9E,Endeavor Air (Pinnacle),Regional,2010,2020,1272512,Regional de Delta
+YV,Mesa Airlines,Regional,2010,2020,1185216,
+F9,Frontier Airlines,Bajo costo,2010,2020,1043526,
+FL,AirTran Airways,Bajo costo,2010,2014,969156,Absorbida por Southwest (WN)
+NK,Spirit Airlines,Bajo costo,2015,2020,928521,Aparece en BTS solo desde 2015 (umbral de aerolineas que reportan)
+OH,PSA Airlines,Regional,2010,2020,908008,Regional de American
+YX,Republic Airline,Regional,2018,2020,864990,Aparece en BTS solo desde 2018
+XE,ExpressJet Airlines,Regional,2010,2011,798363,Se integro a EV en 2011
+HA,Hawaiian Airlines,Tradicional,2010,2020,789537,
+CO,Continental Air Lines,Tradicional,2010,2011,484589,Se integro a United (UA)
+VX,Virgin America,Bajo costo,2012,2018,389060,Absorbida por Alaska (AS)
+G4,Allegiant Air,Bajo costo,2018,2020,300015,Aparece en BTS solo desde 2018

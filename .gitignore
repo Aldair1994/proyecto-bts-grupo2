@@ -9,6 +9,7 @@ data/parquet/
 # Excepciones: tablas de referencia pequeñas que sí se versionan
 !data/lookups/*.csv
 !docs/*.csv
+!docs/calidad/*.csv
 *.parquet
 
 # Python

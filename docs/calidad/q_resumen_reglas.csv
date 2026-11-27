@@ -1,0 +1,15 @@
+,total,pct_de_filas
+filas,67249397,100.0
+R01_duplicados_clave,4,0.0
+R02_nulos_obligatorios,0,0.0
+R03_flags_invalidos,0,0.0
+R04_hora_fuera_rango,0,0.0
+R05_distancia_no_positiva,0,0.0
+R06_cancelado_con_horas,39234,0.0583
+R06_cancelado_sin_codigo,0,0.0
+R07_normal_sin_retraso,969,0.0014
+R08_ardel15_incoherente,352,0.0005
+R09_causas_no_suman,2,0.0
+R11_retraso_atipico,635,0.0009
+cancelados,1302027,1.9361
+desviados,156836,0.2332
