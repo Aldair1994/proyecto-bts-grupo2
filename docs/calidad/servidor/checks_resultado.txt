@@ -1,0 +1,37 @@
+ anio | esperado | meses_log | filas_log | filas_raw | estado 
+------+----------+-----------+-----------+-----------+--------
+ 2010 |  6450117 |        12 |   6450117 |   6450117 | OK
+ 2011 |  6085281 |        12 |   6085281 |   6085281 | OK
+ 2012 |  6096762 |        12 |   6096762 |   6096762 | OK
+ 2013 |  6369482 |        12 |   6369482 |   6369482 | OK
+ 2014 |  5819811 |        12 |   5819811 |   5819811 | OK
+ 2015 |  5819079 |        12 |   5819079 |   5819079 | OK
+ 2016 |  5617658 |        12 |   5617658 |   5617658 | OK
+ 2017 |  5674621 |        12 |   5674621 |   5674621 | OK
+ 2018 |  7206195 |        12 |   7206195 |   7206195 | OK
+ 2019 |  7422037 |        12 |   7422037 |   7422037 | OK
+ 2020 |  4688354 |        12 |   4688354 |   4688354 | OK
+(11 rows)
+
+                                      regla                                       | encontrado | esperado | estado 
+----------------------------------------------------------------------------------+------------+----------+--------
+ R01 duplicados de la clave natural                                               |          4 |        4 | OK
+ R04 horas fuera de rango (0000-2400, minutos 00-59)                              |          0 |        0 | OK
+ R05 distancia no positiva                                                        |          0 |        0 | OK
+ R06 cancelados con hora de salida o llegada (se conservan, solo se marcan)       |      39234 |    39234 | OK
+ R06 cancelados sin codigo de cancelacion                                         |          0 |        0 | OK
+ R07 vuelos normales sin retraso de salida o llegada                              |        969 |      969 | OK
+ R08 arr_del15 incoherente con arr_delay                                          |        352 |      352 | OK
+ R09 causas que no suman el retraso de llegada (tolerancia 1 min)                 |          2 |        2 | OK
+ R10 aerolineas sin descripcion en ref.airlines                                   |          0 |        0 | OK
+ R10 aeropuertos de origen o destino sin descripcion en ref.airports              |          0 |        0 | OK
+ R11 retrasos atipicos (menos de -120 o mas de 1440 min; se marcan, no se borran) |        635 |      635 | OK
+ Cancelados (control de totales)                                                  |    1302027 |  1302027 | OK
+ Desviados (control de totales)                                                   |     156836 |   156836 | OK
+(13 rows)
+
+ filas_raw | filas_fact | diferencia 
+-----------+------------+------------
+  67249397 |   67249397 |          0
+(1 row)
+

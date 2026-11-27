@@ -304,7 +304,7 @@ if resumen.exists():
     p("La corrida cubre los 132 archivos mensuales de enero de 2010 a diciembre de 2020: 67,249,397 vuelos en 4,018 días.", italica=True)
     lista([
         "La fuente viene bastante limpia. No hay nulos en los campos obligatorios, ni banderas inválidas, ni horas fuera de rango, ni distancias no positivas. Hay 4 duplicados de la clave natural y 2 casos donde las causas no suman el retraso de llegada.",
-        "Hay 969 vuelos normales sin retraso reportado (0.0014 %) y 352 donde ArrDel15 no coincide con ArrDelay (0.0005 %). Son pocos, y se van a cuarentena con su código de regla para que Data Engineering los revise.",
+        "Hay 969 vuelos normales sin retraso reportado (0.0014 %) y 352 donde ArrDel15 no coincide con ArrDelay (0.0005 %). Son pocos. En el modelo en estrella, los 352 sin ArrDel15 quedan con estado_vuelo 'Sin dato'; la cuarentena por código de regla sigue como propuesta.",
         "La regla R06 salió más estricta que la realidad. 39,234 vuelos cancelados (0.058 % del total, entre 600 y 1,200 por mes) sí traen hora de salida, porque se cancelaron después de salir de la puerta. No es error de captura: se conservan y se marcan con una bandera, no se rechazan.",
         "Los nulos grandes son legítimos. Las cinco causas de retraso vienen vacías en 82.1 % de los registros porque solo aplican a llegadas con 15 minutos o más. CancellationCode viene vacío en 98.1 % porque solo aplica a cancelados. ArrDelay vacío en 2.17 % corresponde a los cancelados y desviados.",
         "Las tres columnas de Gate Return (FirstDepTime, TotalAddGTime, LongestAddGTime) están vacías en 99.4 % de las filas. Que estén casi siempre vacías es lo esperado: solo traen valor los vuelos que regresaron a la puerta, unos 400 mil. Si la pregunta de regresos a puerta se queda en la lista final se conservan; si se descarta, no hace falta usarlas en el modelo en estrella ni en el dashboard.",
@@ -313,6 +313,16 @@ if resumen.exists():
         "Antes de 2020, los días más extremos son tormentas de invierno y huracanes: 33.6 % el 1 de febrero de 2011, 27.8 % el 29 de octubre de 2012 (Sandy), 27.5 % el 13 de febrero de 2014, 25.0 % el 14 de marzo de 2017 y 24.5 % el 23 de enero de 2016 (Jonas). Los eventos E26 a E30 se agregaron a la tabla porque el dato los mostró y no estaban en la lista inicial.",
         "El dato también confirma el vórtice polar del 6 de enero de 2014 (19 %), Irene el 28 de agosto de 2011 (20.8 %) y la falla de Southwest alrededor del 21 de julio de 2016. El 28 de enero de 2019 llega a 7.3 %, pero con estos datos no podemos separar el cierre de gobierno de otras causas; queda sin confirmar.",
     ])
+    doc.add_heading("Verificación de la carga en el servidor", 3)
+    p("El 26 de noviembre de 2026 comprobamos la base ya cargada (commit 9b8209f), en modo de solo lectura. La evidencia está en docs/calidad/servidor/.")
+    tabla(["Control", "Resultado"], [
+        ("Zips descargados contra el manifiesto SHA-256", "132 de 132 OK"),
+        ("Filas por año: zip, raw.load_log y raw.flights", "11 de 11 años OK, con 12 meses cada uno"),
+        ("Reglas de calidad y totales de control", "13 de 13 iguales a lo medido en la fuente"),
+        ("raw.flights contra dw.fact_flights", "67,249,397 filas en ambas; diferencia 0"),
+    ], anchos=[9.0, 7.0])
+    p("La puntualidad se cita sobre vuelos operados (no cancelados ni desviados): 80.9 % en 2019 y 90.2 % en 2020. Sobre vuelos "
+      "programados da 79.2 % y 84.6 %. El alza de 2020 coincide con la caída del tráfico, pero estas consultas no demuestran la causa.")
 else:
     p("[PENDIENTE] Aquí se insertan los conteos de cada regla y el porcentaje de nulos por columna. Se llenan al correr "
       "00_descarga_bts.py, luego 01_perfilado_calidad.py, y regenerar este documento.", italica=True)
@@ -408,7 +418,7 @@ doc.add_heading("5.2 Variables derivadas", 2)
 tabla(["Variable", "Definición propuesta", "Estado"], [
     ("retraso_total", "Minutos de retraso positivo en la llegada (equivale a ArrDelayMinutes); nulo si el vuelo se canceló o se desvió. retraso_salida y retraso_llegada conservan el signo", "Implementada en sql/build/20_fact_flights.sql"),
     ("categoria_retraso", "A tiempo (0 o menos), Leve (1 a 14), Moderado (15 a 59), Severo (60 a 179), Extremo (180 o más); nulo si cancelado o desviado", "Implementada"),
-    ("estado_vuelo", "Cancelado, Desviado, Retrasado (ArrDel15) o A tiempo, en ese orden de prioridad", "Implementada"),
+    ("estado_vuelo", "Cancelado, Desviado, Sin dato (operado sin ArrDel15: 352 vuelos), Retrasado (ArrDel15) o A tiempo, en ese orden de prioridad", "Implementada"),
     ("semana", "Semana ISO del año de FlightDate (dim_fecha.semana_iso)", "Implementada"),
     ("trimestre", "Trimestre calculado desde la fecha (dim_fecha.trimestre)", "Implementada"),
     ("es_evento", "1 si la fecha cae dentro de un evento de ref_eventos_externos; evento_id con el código", "Propuesta"),
@@ -438,11 +448,12 @@ doc.add_heading("6. Pendientes del Data Administrator", 1)
 tabla(["Tarea", "Estado"], [
     ("Diccionario de datos, metadatos y reglas de calidad", "Listo en este documento y en docs/"),
     ("Scripts de descarga y perfilado", "Listos y corridos con los 132 archivos"),
-    ("Confirmar que etl/p4_load_reference.py baja bien las lookups de BTS", "Pendiente con Data Engineering"),
+    ("Confirmar que etl/p4_load_reference.py carga bien las lookups de BTS", "Hecho: versionadas en data/lookups/"),
     ("Informe de calidad con cifras reales", "Listo, sección 3.5"),
     ("Acordar con el equipo la definición de periodo_covid y de los eventos", "Pendiente"),
     ("Revisar con Data Engineering que las reglas R01 a R13 queden en el ETL", "Pendiente"),
-    ("Repositorio GitHub con ramas, CHANGELOG y etiqueta v1.0.0", "Pendiente"),
+    ("Repositorio GitHub con ramas y CHANGELOG", "Hecho"),
+    ("Etiqueta de versión en Git", "Pendiente"),
     ("Integrar secciones de los demás roles y exportar a PDF", "Pendiente"),
 ], anchos=[11.0, 5.0])
 

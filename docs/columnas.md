@@ -42,7 +42,7 @@ Se seleccionaron 46 de las ~110 columnas, cubriendo las 8 categorías que pide e
 
 | Campo | Regla |
 |---|---|
-| estado_vuelo | Cancelado > Desviado > Sin dato (operado sin `arr_del15`, ~969 vuelos) > Retrasado (`arr_del15`) > A tiempo. Criterio oficial de BTS: un vuelo está a tiempo si llega con menos de 15 min de retraso |
+| estado_vuelo | Cancelado > Desviado > Sin dato (operado sin `arr_del15`, 352 vuelos) > Retrasado (`arr_del15`) > A tiempo. Criterio oficial de BTS: un vuelo está a tiempo si llega con menos de 15 min de retraso |
 | retraso_total | Minutos de retraso positivo en la llegada. No se suma el de salida porque el de llegada ya lo acumula |
 | categoria_retraso | A tiempo (≤0), Leve (1–14), Moderado (15–59), Severo (60–179), Extremo (≥180) |
 | bloque_salida_id | Hora programada de salida, de 0 a 23 |

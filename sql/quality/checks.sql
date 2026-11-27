@@ -2,10 +2,10 @@
 -- sql/quality/checks.sql
 -- Controles de calidad (reglas R01 a R13) sobre raw.flights. Los valores "esperado"
 -- salen de la corrida de calidad sobre los 132 zip de BTS (docs/calidad/).
--- Uso: docker compose exec db psql -U $POSTGRES_USER -d $POSTGRES_DB -f /app/sql/quality/checks.sql
---      (o pegarlo en DBeaver). Es solo lectura: no modifica nada.
--- NOTA: escrito contra el esquema de sql/init/01_raw_flights.sql; no se ha corrido todavia
--- contra una base cargada.
+-- Uso, desde la raiz del repo (tarda unos 13 minutos con la base completa):
+--   docker compose exec -T db sh -c 'psql -U $POSTGRES_USER -d $POSTGRES_DB' < sql/quality/checks.sql
+-- El archivo se pasa por la entrada estandar porque el contenedor db no monta sql/quality/.
+-- Es solo lectura: no modifica nada. Ultima corrida: docs/calidad/servidor/ (todo OK).
 -- =====================================================================
 
 -- 1. Conciliacion de filas por anio (R12) en tres puntos: lo que traen los zip (esperado),
