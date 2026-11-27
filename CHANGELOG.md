@@ -46,3 +46,14 @@ Formato de versiones: MAYOR.MENOR.PARCHE. Mayor si cambia el esquema, menor si c
 - `docs/catalogo_aerolineas.csv`: el codigo OH son dos empresas (Comair en 2010, PSA Airlines en 2018-2020); antes figuraba solo como PSA. Se agrega la nota de anios sin datos en 9E, MQ y YV.
 - Documento CRISP-DM, seccion 3.7: advertencia sobre codigos reutilizados y anios sin datos.
 
+## [1.2.0] - Data Administrator
+
+### Agregado
+- `docs/calidad/servidor/`: evidencia de la verificacion de la carga (132 zips OK, `checks.sql` todo OK, 67,249,397 filas en raw y en la tabla de hechos).
+- Documento CRISP-DM: verificacion de la carga en el servidor.
+
+### Cambiado
+- Definicion de `estado_vuelo`: se registra el valor `Sin dato` (352 vuelos operados sin `arr_del15`), implementado por Data Engineering en el commit `9b8209f`.
+- `docs/columnas.md`: la cantidad de `Sin dato` es 352, no ~969.
+- `sql/quality/checks.sql`: se corrige el comando de uso escrito en el encabezado.
+
