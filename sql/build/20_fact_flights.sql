@@ -7,7 +7,7 @@
 -- Reglas de negocio (documentar en el informe de Data Preparation):
 --   * estado_vuelo: Cancelado > Desviado > Sin dato > Retrasado (arr_del15) > A tiempo.
 --     "A tiempo" sigue el criterio oficial de BTS: llegada con menos de 15 min de retraso.
---     "Sin dato": vuelo operado sin arr_del15 registrado (~969 vuelos, regla R07 de calidad);
+--     "Sin dato": vuelo operado sin arr_del15 registrado (352 vuelos en 2010-2020, regla R08 de calidad);
 --     no se cuenta como a tiempo ni como retrasado.
 --   * retraso_total: minutos de retraso positivo en la llegada (el retraso de llegada
 --     ya acumula el de salida, por eso no se suman ambos).
