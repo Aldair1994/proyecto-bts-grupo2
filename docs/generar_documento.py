@@ -346,10 +346,12 @@ tabla(["Código", "Aerolínea", "Tipo", "Años en los datos", "Vuelos", "Nota"],
       [(r.reporting_airline, r.nombre_comun, r.tipo_aerolinea,
         f"{r.anio_inicio_en_datos} a {r.anio_fin_en_datos}", f"{int(r.vuelos_2010_2020):,}", "" if pd.isna(r.nota) else r.nota)
        for r in cat.itertuples()], anchos=[1.3, 3.6, 2.0, 2.2, 2.2, 4.7], tam=7.5)
-p("Tres cosas afectan cualquier comparación entre aerolíneas. Spirit solo aparece desde 2015, y Allegiant y Republic desde 2018, "
+p("Cuatro cosas afectan cualquier comparación entre aerolíneas. Spirit solo aparece desde 2015, y Allegiant y Republic desde 2018, "
   "porque BTS solo recoge a las que superan cierto tamaño; comparar 2010 contra 2020 por aerolínea deja fuera a esas. Varias "
   "desaparecen por fusión (Continental, AirTran, US Airways, Virgin America, ExpressJet). Y los regionales (SkyWest, Envoy, Endeavor, "
-  "PSA, Mesa, Republic, ExpressJet) vuelan para las grandes, así que un ranking que los mezcle con ellas confunde dos cosas distintas.")
+  "PSA, Mesa, Republic, ExpressJet) vuelan para las grandes, así que un ranking que los mezcle con ellas confunde dos cosas distintas. "
+  "Por último, un código puede pasar de una empresa a otra o tener años vacíos: OH es Comair en 2010 y PSA de 2018 a 2020, "
+  "y 9E, MQ y YV no tienen datos en todos los años. Los años de la tabla son el primero y el último con datos.")
 
 # ------------------------------------------------------------------ 4
 doc.add_heading("4. Gobierno de datos y versionado", 1)

@@ -39,3 +39,10 @@ Formato de versiones: MAYOR.MENOR.PARCHE. Mayor si cambia el esquema, menor si c
 
 ### Agregado
 - `calidad/verificar_descargas.py`: compara los zip descargados contra `docs/manifiesto_fuente.csv` y marca cada mes como OK, DISTINTO, CORRUPTO o FALTA.
+
+## [1.1.1] - Data Administrator
+
+### Corregido
+- `docs/catalogo_aerolineas.csv`: el codigo OH son dos empresas (Comair en 2010, PSA Airlines en 2018-2020); antes figuraba solo como PSA. Se agrega la nota de anios sin datos en 9E, MQ y YV.
+- Documento CRISP-DM, seccion 3.7: advertencia sobre codigos reutilizados y anios sin datos.
+
