@@ -11,8 +11,9 @@
 --     no se cuenta como a tiempo ni como retrasado.
 --   * retraso_total: minutos de retraso positivo en la llegada (el retraso de llegada
 --     ya acumula el de salida, por eso no se suman ambos).
---   * categoria_retraso: A tiempo (<=0), Leve (1-14), Moderado (15-59),
+--   * categoria_retraso: Sin retraso (<=0), Leve (1-14), Moderado (15-59),
 --     Severo (60-179), Extremo (>=180). NULL si el vuelo se canceló o se desvió.
+--     Se llama 'Sin retraso' (y no 'A tiempo') para no confundirla con estado_vuelo.
 --   * bloque_salida_id: hora programada de salida (crs_dep_time / 100); 2400 -> 0.
 -- =====================================================================
 
@@ -44,7 +45,7 @@ SELECT
     f.arr_delay,
     CASE WHEN f.cancelled OR f.diverted THEN NULL ELSE greatest(f.arr_delay, 0) END,
     CASE WHEN f.cancelled OR f.diverted OR f.arr_delay IS NULL THEN NULL
-         WHEN f.arr_delay <= 0   THEN 'A tiempo'
+         WHEN f.arr_delay <= 0   THEN 'Sin retraso'
          WHEN f.arr_delay < 15   THEN 'Leve'
          WHEN f.arr_delay < 60   THEN 'Moderado'
          WHEN f.arr_delay < 180  THEN 'Severo'

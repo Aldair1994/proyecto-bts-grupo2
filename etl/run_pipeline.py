@@ -11,6 +11,7 @@ Pasos, en orden:
     load       p3_load_raw.py        Parquet -> raw.flights (COPY)
     reference  p4_load_reference.py  lookups de BTS + feriados -> ref.*
     star       p5_build_star.py      raw + ref -> dw.* (modelo estrella)
+    marts      p6_build_marts.py     dw.* -> mart.* (vistas resumidas para el dashboard)
 """
 
 import argparse
@@ -21,11 +22,12 @@ import p2_to_parquet
 import p3_load_raw
 import p4_load_reference
 import p5_build_star
+import p6_build_marts
 from common import get_logger
 from config import YEAR_END, YEAR_START
 
 log = get_logger("pipeline")
-ALL_STEPS = ["download", "parquet", "load", "reference", "star"]
+ALL_STEPS = ["download", "parquet", "load", "reference", "star", "marts"]
 
 
 def main() -> int:
@@ -49,6 +51,8 @@ def main() -> int:
         p4_load_reference.main()
     if "star" in a.steps:
         p5_build_star.main(a.start, a.end)
+    if "marts" in a.steps:
+        p6_build_marts.main()
 
     if problems:
         pend = sorted(set(problems))

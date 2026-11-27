@@ -26,6 +26,7 @@ BTS Get Lookup Table + feriados ─▶ p4_load_reference ─▶ ref.*           
 | `raw` | 46 columnas seleccionadas de BTS, tipadas. Una partición por año, de 2010 a 2020 |
 | `ref` | Lookups de BTS (aerolíneas, aeropuertos), feriados de EE. UU. y coordenadas (opcional) |
 | `dw`  | `fact_flights` (particionada por año) + `dim_fecha`, `dim_airline`, `dim_airport`, `dim_bloque_horario`, `dim_cancelacion` |
+| `mart` | Vistas materializadas resumidas para el dashboard (ver [`docs/marts.md`](docs/marts.md)) |
 
 El detalle de cada columna y las reglas de negocio están en [`docs/columnas.md`](docs/columnas.md).
 
