@@ -5,8 +5,10 @@
 -- volver a correr sin duplicar.
 --
 -- Reglas de negocio (documentar en el informe de Data Preparation):
---   * estado_vuelo: Cancelado > Desviado > Retrasado (arr_del15) > A tiempo.
+--   * estado_vuelo: Cancelado > Desviado > Sin dato > Retrasado (arr_del15) > A tiempo.
 --     "A tiempo" sigue el criterio oficial de BTS: llegada con menos de 15 min de retraso.
+--     "Sin dato": vuelo operado sin arr_del15 registrado (~969 vuelos, regla R07 de calidad);
+--     no se cuenta como a tiempo ni como retrasado.
 --   * retraso_total: minutos de retraso positivo en la llegada (el retraso de llegada
 --     ya acumula el de salida, por eso no se suman ambos).
 --   * categoria_retraso: A tiempo (<=0), Leve (1-14), Moderado (15-59),
@@ -54,6 +56,7 @@ SELECT
     f.diverted,
     CASE WHEN f.cancelled THEN 'Cancelado'
          WHEN f.diverted  THEN 'Desviado'
+         WHEN f.arr_del15 IS NULL THEN 'Sin dato'
          WHEN f.arr_del15 THEN 'Retrasado'
          ELSE 'A tiempo' END,
     f.distance, f.crs_elapsed_time, f.actual_elapsed_time, f.air_time,
