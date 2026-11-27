@@ -5,16 +5,16 @@ AA,American Airlines,Tradicional,2010,2020,7650177,Absorbio a US Airways (US) en
 OO,SkyWest Airlines,Regional,2010,2020,7152546,Opera vuelos para varias aerolineas grandes
 UA,United Air Lines,Tradicional,2010,2020,5385827,Absorbio a Continental (CO)
 EV,ExpressJet (Atlantic Southeast),Regional,2010,2020,4615554,Absorbio a XE en 2011
-MQ,Envoy Air (American Eagle),Regional,2010,2020,3319768,Regional de American
+MQ,Envoy Air (American Eagle),Regional,2010,2020,3319768,Regional de American. Sin datos en 2016 y 2017
 B6,JetBlue Airways,Bajo costo,2010,2020,2732689,
 US,US Airways,Tradicional,2010,2015,2246049,Dejo de reportar al integrarse con American
 AS,Alaska Airlines,Tradicional,2010,2020,1926917,Absorbio a Virgin America (VX) en 2018
-9E,Endeavor Air (Pinnacle),Regional,2010,2020,1272512,Regional de Delta
-YV,Mesa Airlines,Regional,2010,2020,1185216,
+9E,Endeavor Air (Pinnacle),Regional,2010,2020,1272512,"Regional de Delta. Solo tiene datos en 2010, 2013 y 2018-2020"
+YV,Mesa Airlines,Regional,2010,2020,1185216,Sin datos de 2014 a 2017
 F9,Frontier Airlines,Bajo costo,2010,2020,1043526,
 FL,AirTran Airways,Bajo costo,2010,2014,969156,Absorbida por Southwest (WN)
 NK,Spirit Airlines,Bajo costo,2015,2020,928521,Aparece en BTS solo desde 2015 (umbral de aerolineas que reportan)
-OH,PSA Airlines,Regional,2010,2020,908008,Regional de American
+OH,PSA Airlines (en 2010: Comair),Regional,2010,2020,908008,"El codigo OH son dos empresas: Comair en 2010 (147633 vuelos) y PSA Airlines en 2018-2020 (760375 vuelos, regional de American). No comparar un periodo contra el otro"
 YX,Republic Airline,Regional,2018,2020,864990,Aparece en BTS solo desde 2018
 XE,ExpressJet Airlines,Regional,2010,2011,798363,Se integro a EV en 2011
 HA,Hawaiian Airlines,Tradicional,2010,2020,789537,
