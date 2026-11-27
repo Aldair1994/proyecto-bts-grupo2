@@ -34,3 +34,8 @@ Formato de versiones: MAYOR.MENOR.PARCHE. Mayor si cambia el esquema, menor si c
 - `sql/quality/checks.sql`: la conciliacion por anio compara ahora los zip, `raw.load_log` y `raw.flights`, y marca cada anio como OK o REVISAR. Sin correr todavia contra una base cargada.
 - `.gitignore`: se une con los cambios de `main` (lookups versionados y `data/logs/`).
 
+
+## [1.1.0] - Data Administrator
+
+### Agregado
+- `calidad/verificar_descargas.py`: compara los zip descargados contra `docs/manifiesto_fuente.csv` y marca cada mes como OK, DISTINTO, CORRUPTO o FALTA.
