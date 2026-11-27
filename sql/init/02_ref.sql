@@ -30,3 +30,15 @@ CREATE TABLE IF NOT EXISTS ref.us_holidays (
     holiday_date date PRIMARY KEY,
     name         text NOT NULL
 );
+
+-- Catálogo de aerolíneas armado por el Data Administrator (docs/catalogo_aerolineas.csv):
+-- nombre común, tipo (Tradicional / Bajo costo / Regional) y años con datos.
+CREATE TABLE IF NOT EXISTS ref.airline_catalog (
+    reporting_airline     varchar(3) PRIMARY KEY,
+    nombre_comun          text       NOT NULL,
+    tipo_aerolinea        varchar(12) NOT NULL,
+    anio_inicio_en_datos  smallint,
+    anio_fin_en_datos     smallint,
+    vuelos_2010_2020      bigint,
+    nota                  text
+);

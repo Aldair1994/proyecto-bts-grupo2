@@ -7,6 +7,8 @@ Uso:
   Si no, se intentan descargar de BTS. Si la descarga falla, bajarlas a mano con el botón
   "Get Lookup Table" de la página de BTS y guardarlas en data/lookups/ con ese nombre.
 - Feriados federales de EE. UU. 2010-2020 con la librería holidays.
+- Catálogo de aerolíneas del Data Administrator (docs/catalogo_aerolineas.csv):
+  nombre común y tipo (Tradicional / Bajo costo / Regional) -> ref.airline_catalog.
 - Coordenadas (opcional, para el mapa): si existe data/lookups/airport_coords.csv con
   columnas iata_code, latitude, longitude, timezone, se carga en ref.airport_coords.
 """
@@ -18,7 +20,7 @@ import pandas as pd
 import requests
 
 from common import connect, get_logger
-from config import BTS_LOOKUP_URL, LOOKUP_DIR, LOOKUPS, YEAR_END, YEAR_START
+from config import BTS_LOOKUP_URL, LOOKUP_DIR, LOOKUPS, ROOT, YEAR_END, YEAR_START
 
 log = get_logger("p4_load_reference")
 
@@ -86,6 +88,7 @@ def main() -> None:
     hol = pd.DataFrame(sorted(us_hol.items()), columns=["holiday_date", "name"])
 
     coords_path = LOOKUP_DIR / "airport_coords.csv"
+    catalog_path = ROOT / "docs" / "catalogo_aerolineas.csv"
 
     with connect() as conn, conn.cursor() as cur:
         cur.execute("TRUNCATE ref.airlines, ref.airports, ref.us_holidays")
@@ -93,6 +96,21 @@ def main() -> None:
         copy_df(cur, "ref.airports", airports)
         copy_df(cur, "ref.us_holidays", hol)
         log.info("Lookups: %d aerolíneas, %d aeropuertos, %d feriados", len(airlines), len(airports), len(hol))
+
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS ref.airline_catalog (
+                reporting_airline varchar(3) PRIMARY KEY, nombre_comun text NOT NULL,
+                tipo_aerolinea varchar(12) NOT NULL, anio_inicio_en_datos smallint,
+                anio_fin_en_datos smallint, vuelos_2010_2020 bigint, nota text)""")
+        cur.execute("TRUNCATE ref.airline_catalog")
+        if catalog_path.exists():
+            cat = pd.read_csv(catalog_path, dtype=str, encoding="utf-8-sig")
+            cols = ["reporting_airline", "nombre_comun", "tipo_aerolinea", "anio_inicio_en_datos",
+                    "anio_fin_en_datos", "vuelos_2010_2020", "nota"]
+            copy_df(cur, "ref.airline_catalog", cat[cols])
+            log.info("Catálogo de aerolíneas: %d aerolíneas", len(cat))
+        else:
+            log.warning("No existe %s: dim_airline quedará sin tipo de aerolínea", catalog_path)
 
         if coords_path.exists():
             coords = pd.read_csv(coords_path, dtype={"iata_code": str})

@@ -13,8 +13,11 @@
 CREATE TABLE IF NOT EXISTS dw.dim_airline (
     airline_id      serial       PRIMARY KEY,
     codigo          varchar(3)   NOT NULL UNIQUE,   -- Reporting_Airline (código único de BTS)
-    nombre          text,                            -- de la lookup L_UNIQUE_CARRIERS
-    dot_id          integer
+    nombre          text,                            -- nombre común (catálogo) o lookup L_UNIQUE_CARRIERS
+    dot_id          integer,
+    tipo_aerolinea  varchar(12),                     -- Tradicional, Bajo costo, Regional (docs/catalogo_aerolineas.csv)
+    anio_inicio     smallint,                        -- primer año con datos en 2010-2020
+    anio_fin        smallint                         -- último año con datos en 2010-2020
 );
 
 CREATE TABLE IF NOT EXISTS dw.dim_airport (
