@@ -1,15 +1,11 @@
 # Conciliación: consultas de análisis vs. vistas mart del dashboard
 
-> Objetivo (requerimiento R13 de `01_preguntas_kpis.md`): que los números del dashboard (Melani,
-> sobre `mart.*`) y los del informe (Data Analyst, sobre `dw.fact_flights`) salgan iguales.
->
-> Método: `docs/analisis/conciliar_marts.py` recalcula cada KPI desde los CSV exportados de las
-> vistas (`docs/mart_*.csv`, commit b5e9bb2) **dividiendo sumas**, como las medidas DAX de
-> `docs/marts.md`, y lo compara con los CSV de la corrida completa del 2026-11-27.
-> Tolerancia: 0 en conteos; 0.011 puntos porcentuales en porcentajes (las consultas redondean a 2 decimales).
->
-> Para repetirla: `python3 docs/analisis/conciliar_marts.py sql/analisis/resultados/<carpeta>`
-> (termina con código 1 si alguna revisión no cuadra).
+## Método
+
+- **Objetivo** (requerimiento R13 de `01_preguntas_kpis.md`): que los números del dashboard (sobre `mart.*`) y los del informe (sobre `dw.fact_flights`) salgan iguales.
+- `docs/analisis/conciliar_marts.py` recalcula cada KPI desde los CSV de las vistas (`docs/mart_*.csv`, commit b5e9bb2) **dividiendo sumas**, como las medidas DAX de `docs/marts.md`, y lo compara con los CSV de la corrida completa del 2026-11-27.
+- **Tolerancia** para marcar OK: 0 en conteos; 0.011 puntos porcentuales en porcentajes (las consultas redondean a 2 decimales).
+- Para repetirla: `python3 docs/analisis/conciliar_marts.py sql/analisis/resultados/<carpeta>` (termina con código 1 si alguna revisión no cuadra).
 
 ## Resultado
 
