@@ -105,9 +105,9 @@ GROUP BY 1
 ORDER BY 1;
 
 
--- 7.6 Distribución por categoría de retraso (A tiempo / Leve / Moderado / Severo / Extremo) y año
+-- 7.6 Distribución por categoría de retraso (Sin retraso / Leve / Moderado / Severo / Extremo) y año
 -- Pregunta: ¿cambió la gravedad de los retrasos? Universo: operados con categoria_retraso no nula.
--- OJO: aquí 'A tiempo' (categoria_retraso) significa retraso de llegada <= 0 min; NO es el KPI-1
+-- OJO: 'Sin retraso' (categoria_retraso) significa retraso de llegada <= 0 min; NO es el KPI-1
 --   (estado_vuelo = 'A tiempo', llegada < 15 min).
 SELECT f.fecha_id / 10000 AS anio, f.categoria_retraso,
        count(*) AS vuelos_operados,
@@ -116,7 +116,7 @@ FROM dw.fact_flights f
 WHERE f.fecha_id BETWEEN 20100101 AND 20201231
   AND f.categoria_retraso IS NOT NULL
 GROUP BY 1, 2
-ORDER BY 1, min(CASE f.categoria_retraso WHEN 'A tiempo' THEN 1 WHEN 'Leve' THEN 2 WHEN 'Moderado' THEN 3
+ORDER BY 1, min(CASE f.categoria_retraso WHEN 'Sin retraso' THEN 1 WHEN 'Leve' THEN 2 WHEN 'Moderado' THEN 3
                                          WHEN 'Severo' THEN 4 ELSE 5 END);
 
 

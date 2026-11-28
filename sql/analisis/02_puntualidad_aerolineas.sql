@@ -109,14 +109,15 @@ ORDER BY d.anio, d.mes, pct_a_tiempo_sobre_operados DESC;
 
 -- 2.4 Distribución de categorías de retraso por aerolínea
 -- Pregunta: ¿qué tan graves son los retrasos de cada aerolínea?
--- Universo: operados con categoria_retraso no nula (A tiempo <=0, Leve 1-14, Moderado 15-59,
+-- Universo: operados con categoria_retraso no nula (Sin retraso <=0, Leve 1-14, Moderado 15-59,
 --   Severo 60-179, Extremo >=180). Los % suman 100 por aerolínea.
--- OJO: la categoría 'A tiempo' de categoria_retraso significa retraso de llegada <= 0 min; NO es el
---   KPI-1 (estado_vuelo = 'A tiempo', llegada < 15 min). Por eso el alias es distinto
---   (pct_sin_retraso_0min_sobre_operados) y sus cifras serán menores que pct_a_tiempo_sobre_operados.
+-- OJO: 'Sin retraso' (categoria_retraso) significa retraso de llegada <= 0 min; NO es el KPI-1
+--   (estado_vuelo = 'A tiempo', llegada < 15 min). Por eso el alias es pct_sin_retraso_0min_sobre_operados
+--   y sus cifras serán menores que pct_a_tiempo_sobre_operados. (Antes se llamaba 'A tiempo'; renombrada
+--   en 20_fact_flights.sql y en la base con sql/maintenance/renombrar_categoria_sin_retraso.sql.)
 SELECT a.codigo AS aerolinea,
        count(*) AS vuelos_operados_con_categoria,
-       round(100.0 * count(*) FILTER (WHERE f.categoria_retraso = 'A tiempo') / NULLIF(count(*),0), 2) AS pct_sin_retraso_0min_sobre_operados,
+       round(100.0 * count(*) FILTER (WHERE f.categoria_retraso = 'Sin retraso') / NULLIF(count(*),0), 2) AS pct_sin_retraso_0min_sobre_operados,
        round(100.0 * count(*) FILTER (WHERE f.categoria_retraso = 'Leve')     / NULLIF(count(*),0), 2) AS pct_leve_sobre_operados,
        round(100.0 * count(*) FILTER (WHERE f.categoria_retraso = 'Moderado') / NULLIF(count(*),0), 2) AS pct_moderado_sobre_operados,
        round(100.0 * count(*) FILTER (WHERE f.categoria_retraso = 'Severo')   / NULLIF(count(*),0), 2) AS pct_severo_sobre_operados,

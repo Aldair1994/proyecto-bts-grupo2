@@ -417,7 +417,7 @@ lista([
 doc.add_heading("5.2 Variables derivadas", 2)
 tabla(["Variable", "Definición propuesta", "Estado"], [
     ("retraso_total", "Minutos de retraso positivo en la llegada (equivale a ArrDelayMinutes); nulo si el vuelo se canceló o se desvió. retraso_salida y retraso_llegada conservan el signo", "Implementada en sql/build/20_fact_flights.sql"),
-    ("categoria_retraso", "A tiempo (0 o menos), Leve (1 a 14), Moderado (15 a 59), Severo (60 a 179), Extremo (180 o más); nulo si cancelado o desviado", "Implementada"),
+    ("categoria_retraso", "Sin retraso (0 o menos), Leve (1 a 14), Moderado (15 a 59), Severo (60 a 179), Extremo (180 o más); nulo si cancelado o desviado", "Implementada"),
     ("estado_vuelo", "Cancelado, Desviado, Sin dato (operado sin ArrDel15: 352 vuelos), Retrasado (ArrDel15) o A tiempo, en ese orden de prioridad", "Implementada"),
     ("semana", "Semana ISO del año de FlightDate (dim_fecha.semana_iso)", "Implementada"),
     ("trimestre", "Trimestre calculado desde la fecha (dim_fecha.trimestre)", "Implementada"),
