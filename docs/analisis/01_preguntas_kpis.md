@@ -9,7 +9,7 @@
 
 - **Vuelo operado** = `NOT cancelado AND NOT desviado`. **Vuelo programado** = todos los vuelos.
 - **A tiempo** (`estado_vuelo = 'A tiempo'`) sigue el criterio oficial de BTS: llegada con menos de 15 min de retraso. Es el KPI-1.
-- **Choque de nombres:** `categoria_retraso = 'A tiempo'` (retraso de llegada <= 0 min) es OTRA definición, más estricta.
+- **No confundir:** `categoria_retraso = 'Sin retraso'` (retraso de llegada <= 0 min) es OTRA definición, más estricta. Antes se llamaba 'A tiempo'; se renombró para no chocar con `estado_vuelo`.
   No es el KPI-1; en las consultas se publica como `pct_sin_retraso_0min_sobre_operados`.
   Recomendación a Data Engineering: renombrar esa categoría en `20_fact_flights.sql` (p. ej. a 'Sin retraso')
   para que el dashboard no muestre dos "A tiempo" distintos.
@@ -130,7 +130,7 @@ Meta: `[META: superar el modelo de referencia en F1 / AUC-PR por ___ puntos]`.
 6. **Tipo de aerolínea**: mientras no exista `dw.dim_airline.tipo` (viene de `docs/catalogo_aerolineas.csv`, de Andoni), las consultas usan una CTE temporal con `-- TODO: reemplazar por dw.dim_airline.tipo cuando exista`. Códigos dudosos en el encabezado de `02_puntualidad_aerolineas.sql` (clasificación discutible de AS, B6, HA, VX, F9; códigos regionales XE, CP, ZW, QX, AX, C5, G7, 9K, KS por confirmar).
 7. **Cobertura de aerolíneas**: Spirit (NK) solo desde 2015; Allegiant (G4) y Republic (YX) desde 2018. Fusiones: Continental CO a UA, AirTran FL a WN, US Airways US a AA, Virgin America VX a AS. Avisarlo siempre que se compare 2010 vs. 2020 (la consulta 02/2.5 compara solo aerolíneas presentes en ambos años). Regionales (SkyWest OO, Envoy MQ, ExpressJet EV, Endeavor 9E, PSA OH, Mesa YV, Republic YX, etc.) se rankean aparte.
 8. **"A tiempo"** sigue el criterio BTS (< 15 min). Hay vuelos operados con `retraso_llegada` nulo que la regla de `20_fact_flights.sql` clasifica como 'A tiempo'; se miden en `01_calidad.sql` (1.5 y 1.9) y deben ser ~0.
-   **Choque de nombres:** `categoria_retraso = 'A tiempo'` significa <= 0 min (no < 15) y no equivale a `estado_vuelo = 'A tiempo'`. Se usa en 02/2.4 y 07/7.6 con alias propio; pendiente que Data Engineering la renombre (p. ej. 'Sin retraso') en `20_fact_flights.sql`.
+   **No confundir:** `categoria_retraso = 'Sin retraso'` significa <= 0 min (no < 15) y no equivale a `estado_vuelo = 'A tiempo'`. Se usa en 02/2.4 y 07/7.6 con alias propio. Resuelto el 2026-11-27: Data Engineering la renombró (antes 'A tiempo') en `20_fact_flights.sql` y en la base con `sql/maintenance/renombrar_categoria_sin_retraso.sql` (42.2 M vuelos).
 9. Las horas (`hora_salida_prog`, etc.) son hora local de cada aeropuerto; la estandarización de zona horaria depende de `dim_airport.zona_horaria` (puede ser NULL).
 10. `retraso_clima` solo mide el WeatherDelay de BTS (subestima el efecto total del clima).
 
