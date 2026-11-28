@@ -3,6 +3,10 @@
 Cada sección indica qué va escrito y qué consulta de `sql/analisis/` alimenta cada tabla o gráfico.
 Cada consulta tiene arriba su pregunta, universo y KPI. Las definiciones están en `01_preguntas_kpis.md`.
 
+**Estado (2026-11-28):** el contenido con cifras reales de las secciones 2, 4 y 5 a 9 está en
+`04_hallazgos.md`; la coherencia con los marts del dashboard, en `05_conciliacion_marts.md`.
+Pendientes: 2.11 (correlaciones sobre muestra), 3 (análisis de visualización, con el dashboard) y 5.8 (modelos).
+
 ## Avisos obligatorios (deben aparecer en el informe)
 
 - **Universo de cada porcentaje**: puntualidad sobre vuelos operados (no cancelados ni desviados); cancelación sobre programados; causas de retraso solo sobre vuelos con retraso de llegada >= 15 min (BTS no reporta causas fuera de ahí; los nulos son esperados).
