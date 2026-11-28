@@ -8,6 +8,9 @@
 > Sigue la estructura de `02_esqueleto_informe.md`. Definiciones y universos: `01_preguntas_kpis.md`.
 > Coherencia con el dashboard: `05_conciliacion_marts.md` (55 de 55 revisiones de cálculo cuadran; falta cargar las coordenadas).
 >
+> Figuras (F01-F16, listas para el documento): `figuras/README.md` (se regeneran con
+> `generar_figuras.py`). Correlaciones (2.11) y modelos (5.8): `modelos/README.md`.
+>
 > Convención de redacción: **Dato** = sale directo de la consulta. **Hipótesis** = interpretación
 > que el dato sugiere pero no prueba (se presenta así en el informe).
 
@@ -168,7 +171,7 @@ Ver Parte II, hallazgos 5.2, 5.4 y 5.5.
 - **Hallazgo**: **el 71 % de los minutos de retraso tiene causas que la aerolínea controla o puede amortiguar** (aerolínea + avión tardío). El clima explícito pesa menos del 5 %.
 - **Límite**: `retraso_clima` solo registra clima extremo; el clima no extremo cuenta como NAS y su efecto se arrastra como avión tardío. **El 4.74 % es un piso, no el efecto total del clima.**
 - **El clima sí domina las cancelaciones**: es la primera causa de cancelación todos los años de 2010 a 2019 (42 % a 59 % de los cancelados) [6.2]. Los 10 días con más cancelaciones antes de 2020 son tormentas y huracanes: 1-feb-2011 (33.6 %), huracán Sandy 29-oct-2012 (27.8 %), 13-feb-2014 (27.5 %), 14-mar-2017 (25.0 %), tormenta Jonas 23-ene-2016 (24.5 %) [mart_serie_diaria, eventos E03, E05, E27, E28, E13].
-- **Meses**: el clima pesa más en junio-julio (0.74 min de clima por vuelo operado) y en enero (0.66); menos en octubre (0.26) [5.5].
+- **Meses**: el clima pesa más en junio (0.74 min de clima por vuelo operado) y julio (0.73) y en enero (0.66); menos en octubre (0.26) [5.5].
 - **Geografía**: más minutos de clima por vuelo en las Dakotas (SD 1.13, ND 1.02) e Illinois (0.93); menos en Hawái (0.09), Puerto Rico (0.12), Arizona (0.17) y California (0.17) [5.6]. Entre estados, más clima se asocia con menos puntualidad (r = -0.42), pero **California es poco afectada por el clima y aun así tiene puntualidad media (81.8 %)**: ahí pesa la congestión (SFO, LAX).
 - **Distancia**: casi sin relación con la puntualidad (2 puntos entre el rango más corto y el más largo) [5.8].
 - **Tendencia**: la participación del clima en los minutos de retraso subió de 4.40 % (2010) a 5.51 % (2019) y 7.04 % (2020) [5.2].
