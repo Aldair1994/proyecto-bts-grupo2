@@ -1,5 +1,12 @@
 # Hallazgos del análisis (Data Understanding y Análisis final) — BORRADOR
 
+## Fuentes y convenciones
+
+- **Fuente de las cifras**: corrida completa del 2026-11-27 (66 consultas de `sql/analisis/` sobre los 67,249,397 vuelos de `dw.fact_flights`, 2010-2020). Resultados en `sql/analisis/resultados/20261127_completo/` (no se versionan; se regeneran con `correr_todo.sh`).
+- **Citas**: cada cifra indica entre corchetes la consulta de donde sale, p. ej. [2.1] = consulta 2.1 de `sql/analisis/02_puntualidad_aerolineas.sql`. [mart_*] = CSV de las vistas mart en `docs/`.
+- **Dato** = sale directo de una consulta. **Hipótesis** = interpretación que el dato sugiere pero no prueba; así se presenta en el informe.
+- Definiciones y universos de los KPI: `01_preguntas_kpis.md`. Coherencia con el dashboard: `05_conciliacion_marts.md`. Figuras F01-F16: `figuras/README.md`. Correlaciones (2.11) y modelos (5.8): `modelos/README.md`.
+
 ## Avisos que acompañan a todas las cifras
 
 - **Puntualidad (KPI-1)** = llegada con menos de 15 min de retraso, **sobre vuelos operados** (ni cancelados ni desviados). **Cancelación (KPI-3)** = sobre vuelos **programados**. **Causas de retraso (KPI-5)** = sobre minutos de vuelos operados con retraso de llegada >= 15 min.
