@@ -8,7 +8,8 @@ PGDATABASE, PGUSER, PGPASSWORD), normalmente por túnel SSH:
     PGHOST=localhost PGPORT=15432 PGDATABASE=bts PGUSER=bts_admin PGPASSWORD=... \\
         .venv/bin/python modelos/extraer_muestra.py --salida data/modelos
 
-Prueba rápida (100 filas de un año): --anios 2019 --limite 100 --salida /tmp/prueba_extraccion
+Prueba rápida (100 filas de un año): --anios 2019 --limite 100  -> prueba_2019.parquet (no se usa
+en los modelos ni toca extraccion.json).
 Los años ya extraídos se saltan (borrar el Parquet para repetirlo).
 """
 import argparse
@@ -66,15 +67,34 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     bitacora = out / "extraccion.json"
     registro = json.loads(bitacora.read_text()) if bitacora.exists() else {"anios": {}}
+    registro["consulta"] = "modelos/muestra.sql"
+
+    def guardar_bitacora():
+        # Se escribe después de cada año: si la extracción se corta, lo ya bajado queda registrado.
+        if not a.limite:
+            bitacora.write_text(json.dumps(registro, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    def resumen(df, por_mil, seg):
+        return {"por_mil": por_mil, "filas": len(df), "segundos": round(seg, 1),
+                "pct_cancelados": round(100 * df.cancelado.mean(), 3),
+                "pct_retraso_15_sobre_operados": round(
+                    100 * df.loc[~df.cancelado & ~df.desviado, "retraso_llegada_15"].mean(), 3),
+                "fecha_extraccion": datetime.now(timezone.utc).isoformat(timespec="seconds")}
 
     with psycopg.connect(application_name="bts_muestra_modelos") as con:
         con.execute("SET statement_timeout = 0")
         for anio in a.anios:
-            destino = out / f"muestra_{anio}.parquet"
+            por_mil = C.POR_MIL_ENTRENAMIENTO if anio <= 2017 else C.POR_MIL_EVALUACION
+            # Una prueba con --limite NUNCA se guarda como muestra_AAAA.parquet (entrenar.py lee
+            # muestra_*.parquet y la corrida completa saltaría el archivo truncado).
+            destino = out / (f"prueba_{anio}.parquet" if a.limite else f"muestra_{anio}.parquet")
             if destino.exists() and not a.limite:
+                if str(anio) not in registro["anios"]:
+                    registro["anios"][str(anio)] = resumen(pd.read_parquet(destino), por_mil, 0) | {
+                        "nota": "registrado desde el Parquet existente"}
+                    guardar_bitacora()
                 print(f"{anio}: ya existe {destino.name}, se salta")
                 continue
-            por_mil = C.POR_MIL_ENTRENAMIENTO if anio <= 2017 else C.POR_MIL_EVALUACION
             t0 = time.time()
             buf = io.BytesIO()
             with con.cursor() as cur:
@@ -82,20 +102,15 @@ def main():
                     for bloque in cp:
                         buf.write(bloque)
             df = a_dataframe(buf.getvalue())
-            df.to_parquet(destino, index=False)
-            seg = time.time() - t0
-            info = {"por_mil": por_mil, "filas": len(df), "segundos": round(seg, 1),
-                    "pct_cancelados": round(100 * df.cancelado.mean(), 3),
-                    "pct_retraso_15_sobre_operados": round(
-                        100 * df.loc[~df.cancelado & ~df.desviado, "retraso_llegada_15"].mean(), 3),
-                    "limite": a.limite,
-                    "fecha_extraccion": datetime.now(timezone.utc).isoformat(timespec="seconds")}
-            registro["anios"][str(anio)] = info
-            print(f"{anio}: {len(df):,} filas ({por_mil} por mil) en {seg:.0f} s; "
+            temporal = destino.with_suffix(".parquet.tmp")
+            df.to_parquet(temporal, index=False)
+            temporal.replace(destino)          # el Parquet aparece completo o no aparece
+            info = resumen(df, por_mil, time.time() - t0)
+            if not a.limite:
+                registro["anios"][str(anio)] = info
+                guardar_bitacora()
+            print(f"{anio}: {len(df):,} filas ({por_mil} por mil) en {info['segundos']:.0f} s -> {destino.name}; "
                   f"cancelados {info['pct_cancelados']} %, retraso>=15 {info['pct_retraso_15_sobre_operados']} %")
-    registro["consulta"] = "modelos/muestra.sql"
-    bitacora.write_text(json.dumps(registro, indent=2, ensure_ascii=False), encoding="utf-8")
-
 
 if __name__ == "__main__":
     main()

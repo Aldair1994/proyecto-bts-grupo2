@@ -279,8 +279,11 @@ def figura_calibracion(pregunta, info, y, p, mejor, ruta):
     ax.set(xlim=(0, lim), ylim=(0, lim), xlabel="Probabilidad predicha (promedio del decil)",
            ylabel="Proporción real de positivos")
     ax.grid(color="#eeeeee", lw=0.8)
+    pesos = "" if (pregunta == 24 and mejor == "Gradient boosting") else (
+        "\nEntrenado con pesos de clase: la probabilidad está inflada a propósito;\n"
+        "sirve para ordenar el riesgo, no como probabilidad real.")
     ax.set_title(f"Pregunta {pregunta}: calibración de {mejor} (prueba)\n"
-                 f"Diagonal = calibración perfecta.", loc="left", fontsize=11, color=TEXTO)
+                 f"Diagonal = calibración perfecta.{pesos}", loc="left", fontsize=10, color=TEXTO)
     _pie(fig)
     fig.savefig(ruta)
     plt.close(fig)

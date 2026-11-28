@@ -29,9 +29,9 @@ ssh -N -C -L 15432:localhost:5432 ubuntu@100.55.222.111
 # Terminal B: contraseña de la BD = POSTGRES_PASSWORD del .env de ~/app en el servidor
 #   (ssh ubuntu@100.55.222.111 'grep POSTGRES_PASSWORD ~/app/.env')  o  cd ../infra && tofu output -raw db_password
 export PGHOST=localhost PGPORT=15432 PGDATABASE=bts PGUSER=bts_admin PGPASSWORD='...'
-.venv/bin/python modelos/extraer_muestra.py --anios 2019 --limite 100 --salida /tmp/prueba_extraccion  # prueba
+.venv/bin/python modelos/extraer_muestra.py --anios 2019 --limite 100   # prueba -> data/modelos/prueba_2019.parquet (no se usa)
 .venv/bin/python modelos/extraer_muestra.py --salida data/modelos                                    # completa
-# (si se corta, volver a correrla: salta los años ya guardados)
+# (si se corta, volver a correrla: salta los años ya guardados; la bitácora se escribe año por año)
 
 # 2) Sin servidor (se puede apagar):
 .venv/bin/python modelos/correlaciones.py --datos data/modelos --salida modelos/resultados
@@ -51,7 +51,7 @@ Comprobar en `data/modelos/extraccion.json` que el % de cancelados y de retraso 
 
 - **Sin fuga**: no se usan retraso de salida, hora real, taxi, causas ni nada posterior al despegue; `comun.py` falla si alguna entra.
 - **Tasas históricas** (aeropuerto, ruta, aerolínea × franja, aeropuerto × mes) calculadas solo con entrenamiento; en las filas de entrenamiento, con los *otros* años (fuera de pliegue) para no filtrar el objetivo.
-- **Umbral** = máximo F1 en validación. **Desbalance**: pesos de clase (sin remuestrear validación ni prueba).
+- **Umbral** = máximo F1 en validación. **Desbalance**: pesos de clase en la logística y el bosque (ambas preguntas) y en gradient boosting de la pregunta 25; gradient boosting de la 24 sin pesos (prevalencia ~18 %). No se remuestrea validación ni prueba. Los modelos con pesos **no están calibrados**: su probabilidad ordena el riesgo pero no es una probabilidad real (ver `pNN_calibracion.png`).
 - **Métrica principal**: AUC-PR (comparar con la prevalencia, que es el AUC-PR del azar); accuracy solo como referencia.
 - El bosque aleatorio se entrena con 600 mil filas (costo); logística y gradient boosting con toda la muestra de entrenamiento.
 - Opción A del plan (entrenar 2010-2018, validar 2019, probar 2020): `--particion A`.

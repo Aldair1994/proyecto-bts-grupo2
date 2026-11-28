@@ -88,7 +88,8 @@ def texto_contraste(rgb):
     r, g, b = [c if c > 0.03928 else c / 12.92 for c in rgb]
     r, g, b = [((c + 0.055) / 1.055) ** 2.4 if c > 0.03928 else c for c in (r, g, b)]
     lum = 0.2126 * r + 0.7152 * g + 0.0722 * b
-    return "#ffffff" if lum < 0.35 else INK
+    # Elige el texto con más contraste (WCAG) entre blanco e INK (#191919, luminancia ~0.0097).
+    return "#ffffff" if (1.05 / (lum + 0.05)) >= ((lum + 0.05) / 0.0597) else INK
 
 
 def etiqueta_barras_v(ax, bars, fmt="{:.1f}", dy=0.0, size=8):
@@ -238,9 +239,9 @@ def f06_por_hora(res):
     a1.set_ylabel("% a tiempo\nsobre operados")
     a1.set_ylim(65, 100)
     mx, mn = d.loc[d.pct_a_tiempo_sobre_operados.idxmax()], d.loc[d.pct_a_tiempo_sobre_operados.idxmin()]
-    a1.annotate(f"{mx.pct_a_tiempo_sobre_operados:.1f} % (05:00)", (mx.bloque_id, mx.pct_a_tiempo_sobre_operados),
+    a1.annotate(f"{mx.pct_a_tiempo_sobre_operados:.1f} % ({int(mx.bloque_id):02d}:00)", (mx.bloque_id, mx.pct_a_tiempo_sobre_operados),
                 xytext=(7.5, 94), fontsize=9, arrowprops=dict(arrowstyle="->", color=INK2))
-    a1.annotate(f"{mn.pct_a_tiempo_sobre_operados:.1f} % (18:00)", (mn.bloque_id, mn.pct_a_tiempo_sobre_operados),
+    a1.annotate(f"{mn.pct_a_tiempo_sobre_operados:.1f} % ({int(mn.bloque_id):02d}:00)", (mn.bloque_id, mn.pct_a_tiempo_sobre_operados),
                 xytext=(19.5, 70), fontsize=9, arrowprops=dict(arrowstyle="->", color=INK2))
     a2.bar(h, d["pct_cancelados_sobre_programados"], color=ORANGE, width=0.7)
     a2.set_ylabel("% cancelados\nsobre programados")
@@ -528,12 +529,19 @@ FIGURAS = [f01_vuelos_mes, f02_pct_a_tiempo_mes, f03_estados_por_anio, f04_hist_
            f15_covid_franja, f16_clima_mes]
 
 
+# Las anotaciones de texto de algunas figuras citan cifras de esta corrida (sql/analisis/resultados/).
+CORRIDA_REFERENCIA = "20261127_completo"
+
+
 def main():
     if len(sys.argv) != 2:
         sys.exit(__doc__)
     res = Path(sys.argv[1])
     if not res.is_absolute():
         res = ROOT / res
+    if res.name != CORRIDA_REFERENCIA:
+        print(f"AVISO: varias anotaciones (global 17.64 %, 84 % código D, vórtice polar, mediana -5 min, "
+              f"74.24 % a 90.35 %) están escritas para {CORRIDA_REFERENCIA}; con {res.name} pueden no coincidir.")
     for f in FIGURAS:
         f(res)
 

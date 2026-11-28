@@ -140,6 +140,8 @@ def tasas_historicas(train: pd.DataFrame, otros: list, claves_tasa=CLAVES_TASA, 
         tot = train.groupby(claves, observed=True)["y"].agg(s="sum", n="count").reset_index()
         anu = train.groupby(claves + ["anio"], observed=True)["y"].agg(sa="sum", na="count").reset_index()
         t = train[claves + ["anio"]].merge(tot, on=claves, how="left").merge(anu, on=claves + ["anio"], how="left")
+        # Clave nula: groupby la descarta; igual que en validación/prueba, recibe la tasa global.
+        t = t.fillna({"s": 0, "n": 0, "sa": 0, "na": 0})
         train[nombre] = ((t.s - t.sa + m * prior) / (t.n - t.na + m)).to_numpy()
         for o in otros:
             t = o[claves].merge(tot, on=claves, how="left")
