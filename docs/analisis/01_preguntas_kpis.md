@@ -1,10 +1,5 @@
 # Business Understanding: objetivos, preguntas de negocio y KPI (BORRADOR)
 
-> Borrador del Data Analyst para discutir con el equipo. Los valores actuales están "por calcular"
-> (se llenan al terminar la carga de ~67 M de vuelos) y las metas son marcadores editables
-> `[META: ___]`: no hay cifras inventadas. Todas las consultas están en `sql/analisis/` y se
-> probaron con datos sintéticos (ver sección 6).
-
 ## 0. Convenciones de definición (valen para todo el proyecto)
 
 - **Vuelo operado** = `NOT cancelado AND NOT desviado`. **Vuelo programado** = todos los vuelos.
@@ -38,7 +33,7 @@ cancelan los vuelos para priorizar acciones.
   - `pct_salida_retrasada_15_sobre_operados` = vuelos operados con `retraso_salida_15 = true` / vuelos operados con `retraso_salida_15` no nulo * 100, por `origin_airport_id`. (KPI-4)
   - `pct_a_tiempo_sobre_operados` por `destination_airport_id`. (KPI-1)
 - **Universo**: vuelos operados del aeropuerto; solo aeropuertos con >= N vuelos operados.
-- **Valor actual**: por calcular. **Meta**: `[META: reducir a ___ % las salidas retrasadas en los aeropuertos del cuartil peor]`.
+- **Valor actual** (2010-2020, ver `04_hallazgos.md` 5.1): KPI-4 global 17.64 %; 30 aeropuertos más grandes 18.77 % vs. resto 15.47 %; peor grande Midway 25.39 %, mejor Salt Lake City 12.34 %. **Meta**: `[META: reducir a ___ % las salidas retrasadas en los aeropuertos del cuartil peor]`.
 - **Consultas**: `03_aeropuertos.sql` (3.1 a 3.7); mapa en 3.4 y alternativa por estado en 3.5.
 
 ### Objetivo 2. Determinar patrones estacionales en los vuelos
@@ -49,7 +44,7 @@ cancelan los vuelos para priorizar acciones.
   3. ¿Cómo evoluciona el volumen de vuelos y la puntualidad de 2010 a 2020?
 - **KPI**: `pct_a_tiempo_sobre_operados` y `mediana_retraso_llegada_min` por mes / día / bloque horario / temporada / es_feriado; vuelos por día (KPI-7).
 - **Universo**: operados del periodo analizado. El patrón estacional se calcula con 2010-01 a 2020-02 (antes de `periodo_covid`).
-- **Valor actual**: por calcular. **Meta**: `[META: identificar los ___ meses y las ___ franjas horarias críticas para reforzar operación]`.
+- **Valor actual** (2010-01 a 2020-02, ver `04_hallazgos.md` 5.2): meses críticos junio (77.14 %), julio (77.69 %) y diciembre (78.49 %); franja crítica 17:00-21:59 (73.5-75.3 %) frente a 92.34 % a las 5 a. m. **Meta**: `[META: identificar los ___ meses y las ___ franjas horarias críticas para reforzar operación]`.
 - **Consultas**: `04_estacionalidad.sql` (4.1 a 4.9).
 
 ### Objetivo 3. Calcular qué aerolíneas presentan mejor desempeño puntual
@@ -60,7 +55,7 @@ cancelan los vuelos para priorizar acciones.
   3. ¿Qué tan graves son los retrasos de cada aerolínea (categorías Leve a Extremo)?
 - **KPI**: `pct_a_tiempo_sobre_operados` (KPI-1); `mediana_retraso_llegada_min` (KPI-2); `pct_cancelados_sobre_programados` (KPI-3).
 - **Universo**: operados de la aerolínea, con mínimo de vuelos. Los rankings se hacen **por tipo** (regional / bajo costo / tradicional).
-- **Valor actual**: por calcular. **Meta**: `[META: ___ % de vuelos a tiempo; brecha máxima de ___ puntos entre la mejor y la peor de cada tipo]`.
+- **Valor actual** (2010-2020, ver `04_hallazgos.md` 5.3): tradicional 83.27 %, regional 80.73 %, bajo costo 80.47 %; brecha mejor-peor dentro del tipo: 10.9, 5.4 y 8.1 puntos. Cancelación: regional 2.83 %, tradicional 1.39 %. **Meta**: `[META: ___ % de vuelos a tiempo; brecha máxima de ___ puntos entre la mejor y la peor de cada tipo]`.
 - **Consultas**: `02_puntualidad_aerolineas.sql` (2.1 a 2.5).
 - **Avisos**: ver sección 4 (Spirit, Allegiant, Republic, fusiones).
 
@@ -72,7 +67,7 @@ cancelan los vuelos para priorizar acciones.
   3. ¿La distancia del vuelo se relaciona con el retraso?
 - **KPI**: `pct_causa_X_sobre_min_retraso_15` = minutos de la causa X / suma de minutos de las 5 causas * 100 (KPI-5); `min_clima_por_vuelo_operado`; `pct_a_tiempo_sobre_operados` por rango de distancia.
 - **Universo**: participación de causas = solo operados con `retraso_llegada >= 15`. Clima por vuelo = todos los operados (nulo = 0), indicado en el alias.
-- **Valor actual**: por calcular. **Meta**: `[META: explicar ___ % de los minutos de retraso con causas controlables por la aerolínea]`.
+- **Valor actual** (2010-2020, ver `04_hallazgos.md` 5.4): avión tardío 39.95 %, aerolínea 31.23 %, NAS 24.06 %, clima 4.74 %, seguridad 0.14 % de los minutos de retraso (controlables: 71.2 %). Clima = 42-59 % de las cancelaciones por año (2010-2019). **Meta**: `[META: explicar ___ % de los minutos de retraso con causas controlables por la aerolínea]`.
 - **Consultas**: `05_causas_retraso_clima.sql` (5.1 a 5.9).
 - **Límite**: `retraso_clima` es solo el WeatherDelay de BTS; el clima también influye en NAS y en avión tardío (subestima el impacto total). Los datos climatológicos externos (3.3 del enunciado) son opcionales y no están cargados.
 
@@ -83,7 +78,7 @@ cancelan los vuelos para priorizar acciones.
   2. ¿Se puede predecir qué vuelos se cancelarán con información disponible antes de la salida?
 - **KPI**: `pct_cancelados_sobre_programados` = cancelados / programados * 100 (KPI-3); `pct_desviados_sobre_programados` (KPI-8); en el modelo: precisión y recall de la clase "cancelado".
 - **Universo**: todos los vuelos programados (los cancelados no son "operados").
-- **Valor actual**: por calcular (referencia del equipo: ~1.9 % del periodo y ~6 % en 2020). **Meta**: `[META: recall >= ___ con precisión >= ___ para la clase cancelado]`.
+- **Valor actual** (2010-2020, ver `04_hallazgos.md` 5.5): 1.94 % del periodo, 1.62 % antes de COVID, 5.99 % en 2020; desvío 0.23 %. **Meta**: `[META: recall >= ___ con precisión >= ___ para la clase cancelado]`.
 - **Consultas**: `06_cancelaciones.sql` (6.1 a 6.9); plan del modelo en `03_plan_modelos.md`.
 
 ### Objetivo 6. Cuantificar el efecto de COVID-19 en 2020
@@ -94,7 +89,7 @@ cancelan los vuelos para priorizar acciones.
   3. ¿Qué aerolíneas y aeropuertos fueron más afectados?
 - **KPI**: `variacion_vuelos_pct_vs_2019` (KPI-7), `pct_cancelados_sobre_programados` (KPI-3), `pct_a_tiempo_sobre_operados` (KPI-1), comparados mes a mes.
 - **Universo**: programados (volumen, cancelación) y operados (puntualidad). Se compara cada mes de 2020 con el mismo mes de 2019. `dim_fecha.periodo_covid = true` desde 2020-03-01 (supuesto).
-- **Valor actual**: por calcular. **Meta**: `[META: documentar la caída máxima mensual y el mes de recuperación a >= ___ % del volumen 2019]`.
+- **Valor actual** (ver `04_hallazgos.md` 5.6): -44.4 % de vuelos mar-dic 2020 vs. 2019; peor mes mayo (-71.6 %); 2020 cerró en 55-66 % del volumen de 2019 (sin recuperación); puntualidad mar-dic 91.80 % vs. 81.17 %. **Meta**: `[META: documentar la caída máxima mensual y el mes de recuperación a >= ___ % del volumen 2019]`.
 - **Consultas**: `08_covid_2020.sql` (8.1 a 8.7).
 
 ### Objetivo analítico de modelado (pregunta 24)
@@ -164,7 +159,7 @@ Reglas de visualización: ranking de aerolíneas por tipo (regional / bajo costo
 
 ## 6. Estado de las consultas
 
-Los 8 archivos de `sql/analisis/` corren sin error sobre Postgres 16 con datos **sintéticos** (no reales). Los valores de KPI reales quedan "por calcular" hasta terminar la carga. Los mínimos de volumen están calibrados para la base completa; con muestras pequeñas pueden devolver 0 filas (no es un error).
+Los 8 archivos de `sql/analisis/` corren sin error sobre Postgres 16. **Corrida completa del 2026-11-27 sobre los 67,249,397 vuelos: 66 de 66 consultas OK en 78 min** (las que recorren toda la tabla tardan ~65 s; las de un año, 1-12 s). Los valores reales están en `04_hallazgos.md` y cuadran con los marts del dashboard (`05_conciliacion_marts.md`). Los mínimos de volumen están calibrados para la base completa; con muestras pequeñas pueden devolver 0 filas (no es un error).
 
 Para correrlas todas contra el servidor (túnel SSH `ssh -N -L 5432:localhost:5432 ubuntu@100.55.222.111`, variables `PG*` de psql) usar `sql/analisis/correr_todo.sh`: guarda un CSV por consulta y `tiempos.csv` en `sql/analisis/resultados/AAAAMMDD/` (no se versiona).
 Opciones: `--anio AAAA` (no modifica las consultas con rango propio, como 2010-2020-02 o 2019-2020) y `--solo 02`.
